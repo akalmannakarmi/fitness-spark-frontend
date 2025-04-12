@@ -1,6 +1,7 @@
 import axios from 'axios'
 import { BASE_URL } from '@/lib/routes'
 import Router from 'next/router'
+import { useAuth } from './auth'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || BASE_URL
 
@@ -22,8 +23,8 @@ axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
     if (error.response?.status === 401) {
-      localStorage.removeItem('access_token')
-      localStorage.removeItem('is_admin')
+      const { logout } = useAuth()
+      logout()
       Router.push('/login')
     }
     return Promise.reject(error)
