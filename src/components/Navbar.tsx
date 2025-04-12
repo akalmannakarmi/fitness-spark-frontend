@@ -1,13 +1,12 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, User } from "lucide-react";
+import { useAuth } from '@/lib/auth'
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { isLoggedIn, isAdmin } = useAuth()
 
-  // Mock login & admin status (replace with real auth later)
-  const isLoggedIn = true;
-  const isAdmin = true;
 
   const navLinks = [
     { href: "/meal-plans", label: "Meal Plans" },

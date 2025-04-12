@@ -1,37 +1,56 @@
-"use client";
+import { useState } from 'react'
+import { AxiosResponse } from 'axios'
+import axiosInstance from '@/lib/axios'
+import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
+import { routes } from '@/lib/routes'
+import { useAuth } from '@/lib/auth'
+import Link from 'next/link'
 
-import { useFormState } from "react-dom";
-import { loginAction } from "../actions/login";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-
-const initialState = null;
+type LoginInput = {
+  username: string
+  password: string
+}
 
 export default function Login() {
-  const router = useRouter();
-  const [state, formAction] = useFormState(loginAction, initialState);
+  const router = useRouter()
+  const {login} = useAuth()
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
-  useEffect(() => {
-    if (state?.success) {
-      router.push("/");
-    }
-  }, [state, router]);
+  const loginMutation = useMutation<AxiosResponse<any>, Error, LoginInput>({
+    mutationFn: (data: LoginInput) =>
+      axiosInstance.post(routes.login_url, data),
+    onSuccess: (res) => {
+      const token = res.data.access_token
+      const admin = res.data.admin
+      login(token,admin)
+
+      router.push('/')
+    },
+    onError: (error) => {
+      console.error('Login failed:', error)
+    },
+  })
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    loginMutation.mutate({ username, password })
+  }
 
   return (
     <>
-      <Navbar />
       <main className="flex flex-col justify-center items-center min-h-dvh px-6 py-12">
         <div className="w-full max-w-md">
           <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
-          <form action={formAction} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
             <input
               type="text"
               name="username"
-              placeholder="username"
+              placeholder="Username"
               className="w-full border border-gray-300 rounded px-4 py-2"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
               required
             />
             <input
@@ -39,27 +58,33 @@ export default function Login() {
               name="password"
               placeholder="Password"
               className="w-full border border-gray-300 rounded px-4 py-2"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
             />
             <button
               type="submit"
               className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
+              disabled={loginMutation.isPending}
             >
-              Login
+              {loginMutation.isPending ? 'Logging in...' : 'Login'}
             </button>
           </form>
-          {state?.message && (
-            <p className="mt-2 text-center text-sm text-red-500">{state.message}</p>
+
+          {loginMutation.isError && (
+            <p className="mt-2 text-center text-sm text-red-500">
+              Login failed. Please check your credentials.
+            </p>
           )}
+
           <p className="mt-4 text-center text-sm text-gray-600">
-            Don’t have an account?{" "}
+            Don’t have an account?{' '}
             <Link href="/signup" className="text-blue-600 hover:underline">
               Sign up instead
             </Link>
           </p>
         </div>
       </main>
-      <Footer />
     </>
-  );
+  )
 }

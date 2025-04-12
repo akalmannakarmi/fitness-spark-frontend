@@ -5,7 +5,6 @@ import Link from "next/link";
 export default function Signup() {
   return (
     <>
-      <Navbar />
       <main className="flex flex-col justify-center items-center min-h-dvh px-6 py-12">
         <div className="w-full max-w-md">
           <h1 className="text-3xl font-bold mb-6 text-center">Sign Up</h1>
@@ -40,7 +39,6 @@ export default function Signup() {
           </p>
         </div>
       </main>
-      <Footer />
     </>
   );
 }
