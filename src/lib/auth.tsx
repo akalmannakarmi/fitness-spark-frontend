@@ -32,6 +32,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   }
 
   const logout = () => {
+    console.log("Here!");
     localStorage.removeItem('access_token')
     localStorage.removeItem('is_admin')
     setIsLoggedIn(false)

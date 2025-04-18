@@ -6,6 +6,8 @@ import { useMutation } from '@tanstack/react-query'
 import { routes } from '@/lib/routes'
 import { useAuth } from '@/lib/auth'
 import Link from 'next/link'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 type LoginInput = {
   username: string
@@ -14,7 +16,7 @@ type LoginInput = {
 
 export default function Login() {
   const router = useRouter()
-  const {login} = useAuth()
+  const {login,logout} = useAuth()
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
@@ -40,7 +42,8 @@ export default function Login() {
 
   return (
     <>
-      <main className="flex flex-col justify-center items-center min-h-dvh px-6 py-12">
+      <Navbar />
+      <main onLoad={logout} className="flex flex-col justify-center items-center min-h-dvh px-6 py-12">
         <div className="w-full max-w-md">
           <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -85,6 +88,7 @@ export default function Login() {
           </p>
         </div>
       </main>
+      <Footer />
     </>
   )
 }

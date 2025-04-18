@@ -3,6 +3,8 @@
 import { useQuery } from '@tanstack/react-query'
 import axiosInstance from '@/lib/axios'
 import routes from '@/lib/routes'
+import Navbar from '@/components/Navbar'
+import Footer from '@/components/Footer'
 
 type MealPlan = {
   _id: string
@@ -29,6 +31,7 @@ export default function MealPlans() {
 
   return (
     <>
+      <Navbar />
       <main className="max-w-5xl mx-auto px-6 py-12 min-h-dvh">
         <h1 className="text-4xl font-bold mb-4">Meal Plans</h1>
         <p className="text-gray-700 mb-8">
@@ -51,6 +54,7 @@ export default function MealPlans() {
           </div>
         )}
       </main>
+      <Footer />
     </>
   )
 }

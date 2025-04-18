@@ -1,3 +1,5 @@
+import Footer from "@/components/Footer"
+import Navbar from "@/components/Navbar"
 import axiosInstance from "@/lib/axios"
 import routes from "@/lib/routes"
 import { useQuery } from "@tanstack/react-query"
@@ -32,6 +34,7 @@ export default function Recipes() {
 
   return (
     <>
+      <Navbar />
       <main className="max-w-5xl mx-auto px-6 py-12 min-h-dvh">
         <h1 className="text-4xl font-bold mb-4">Recipes</h1>
         <p className="text-gray-700 mb-4">
@@ -59,6 +62,7 @@ export default function Recipes() {
           </div>
         )}
       </main>
+      <Footer />
     </>
   );
 }

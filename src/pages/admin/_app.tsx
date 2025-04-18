@@ -6,7 +6,6 @@ import { useState } from 'react'
 
 import { AuthProvider } from '@/lib/auth'
 
-
 export default function MyApp({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient())
 
