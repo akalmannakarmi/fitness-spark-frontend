@@ -8,6 +8,14 @@ export const routes = {
 
     stats_url: `stats/models`,
     stat_detail_url: (id:string) => `stats/model/${id}`,
+
+    admin: {
+        recipes: `/api/v1/admin/get/recipes/`,
+        recipe: (id:string) => `/api/v1/admin/get/recipe/${id}`,
+        recipe_create: `/api/v1/admin/create/recipe/`,
+        recipe_update: (id:string) => `/api/v1/admin/update/recipe/${id}`,
+        recipe_delete: (id:string) => `/api/v1/admin/delete/recipe/${id}`,
+    }
 }
 
 export default routes;
