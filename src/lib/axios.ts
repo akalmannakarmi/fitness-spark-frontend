@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { BASE_URL } from '@/lib/routes'
 import Router from 'next/router'
-import { useAuth } from './auth'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || BASE_URL
 

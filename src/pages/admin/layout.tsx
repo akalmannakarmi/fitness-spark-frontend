@@ -50,7 +50,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       )}
 
       {/* Main content */}
-      <div className="flex-1 ml-0 md:ml-64 p-8 transition-all duration-300">
+      <div className="flex-1 ml-0 md:ml-16 p-8 transition-all duration-300">
         <div className="md:hidden flex justify-end">
           <button
             className="text-2xl text-blue-600"

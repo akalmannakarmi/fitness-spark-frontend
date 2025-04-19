@@ -5,6 +5,9 @@ export const routes = {
     login_url: `auth/login`,
     meal_plans: `api/v1/meal_plan/get/meal_plans/`,
     recipes: `api/v1/recipe/get/recipes`,
+
+    stats_url: `stats/models`,
+    stat_detail_url: (id:string) => `stats/model/${id}`,
 }
 
 export default routes;
