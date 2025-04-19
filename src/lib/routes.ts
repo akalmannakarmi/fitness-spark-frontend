@@ -15,6 +15,12 @@ export const routes = {
         recipe_create: `/api/v1/admin/create/recipe/`,
         recipe_update: (id:string) => `/api/v1/admin/update/recipe/${id}`,
         recipe_delete: (id:string) => `/api/v1/admin/delete/recipe/${id}`,
+
+        mealPlans: `/api/v1/admin/get/meal_plans/`,
+        mealPlan: (id:string) => `/api/v1/admin/get/meal_plan/${id}`,
+        mealPlan_create: `/api/v1/admin/create/meal_plan/`,
+        mealPlan_update: (id:string) => `/api/v1/admin/update/meal_plan/${id}`,
+        mealPlan_delete: (id:string) => `/api/v1/admin/delete/meal_plan/${id}`,
     }
 }
 
