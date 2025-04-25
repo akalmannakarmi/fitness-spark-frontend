@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { AxiosResponse } from 'axios'
 import axiosInstance from '@/lib/axios'
 import { useRouter } from 'next/navigation'
@@ -8,6 +8,7 @@ import { useAuth } from '@/lib/auth'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import { log } from 'console'
 
 type LoginInput = {
   username: string
@@ -24,9 +25,9 @@ export default function Login() {
     mutationFn: (data: LoginInput) =>
       axiosInstance.post(routes.login_url, data),
     onSuccess: (res) => {
-      const token = res.data.access_token
-      const admin = res.data.admin
-      login(token,admin)
+      const token = res.data.access_token;
+      const admin = res.data.admin;
+      login(token,admin);
 
       router.push('/')
     },

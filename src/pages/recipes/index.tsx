@@ -45,6 +45,14 @@ type Filters = {
   };
 };
 
+const booleanFilterKeys: (keyof Filters)[] = [
+  'vegetarian',
+  'vegan',
+  'glutenFree',
+  'dairyFree',
+  'cheep',
+];
+
 const getLimitByWidth = (width: number) => {
   if (width >= 1280) return 12; // xl
   if (width >= 1024) return 9;  // lg
@@ -115,14 +123,14 @@ export default function Recipes() {
           <aside className="bg-white rounded-xl shadow p-6 border border-gray-100">
             <h2 className="text-xl font-semibold mb-4">Filters</h2>
             <div className="flex flex-col gap-3">
-              {['vegetarian', 'vegan', 'glutenFree', 'dairyFree', 'cheep'].map((key) => {
+              {booleanFilterKeys.map((key) => {
                 const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
                 return (
                   <label key={key} className="flex items-center gap-2">
                     <input
                       type="checkbox"
-                      checked={filters[key as keyof Filters] || false}
-                      onChange={() => handleFilterChange(key as keyof Filters)}
+                      checked={!!filters[key]} // safely coerce to boolean
+                      onChange={() => handleFilterChange(key)}
                       className="accent-green-600"
                     />
                     <span>{label}</span>

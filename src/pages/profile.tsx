@@ -6,6 +6,7 @@ import Footer from '@/components/Footer';
 import { useQuery } from '@tanstack/react-query';
 import axiosInstance from '@/lib/axios';
 import routes from '@/lib/routes';
+import { useAuth } from '@/lib/auth';
 
 type UserData = {
   _id:string;
@@ -23,6 +24,7 @@ const fetchUserData = async (): Promise<UserData> => {
 
 export default function Profile() {
   const router = useRouter();
+  const {logout} = useAuth()
 
   const { data: user } = useQuery({
     queryKey: ['user'],
@@ -30,8 +32,8 @@ export default function Profile() {
   })
 
   const handleLogout = () => {
-    localStorage.removeItem('access_token');
-    router.push('/login'); // Or '/' if you prefer
+    logout();
+    router.push('/login');
   };
 
   return (
