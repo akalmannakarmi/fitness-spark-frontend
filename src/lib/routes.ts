@@ -3,7 +3,9 @@ export const BASE_URL = process.env.NEXT_PUBLIC_API_URL
 export const routes = {
     signup_url: `auth/signup`,
     login_url: `auth/login`,
+    user_info: `auth/users/me`,
     meal_plans: `api/v1/meal_plan/get/meal_plans/`,
+    meal_plan: (id:string) => `api/v1/meal_plan/get/meal_plan/${id}`,
     recipes: `api/v1/recipe/get/recipes`,
     recipes_list: `api/v1/recipe/list/recipes`,
     recipe: (id:string) => `api/v1/recipe/get/recipe/${id}`,
