@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/router";
 import AdminLayout from "../layout";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import { toast } from "sonner";
@@ -24,6 +24,13 @@ export default function CreateMealPlanPage() {
   const [summary, setSummary] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [dailyPlans, setDailyPlans] = useState<DayPlan[]>([]);
+  const { data: recipeOptions, isLoading: isRecipesLoading } = useQuery({
+    queryKey: ["all-recipes"],
+    queryFn: async () => {
+      const res = await axiosInstance.get(routes.recipes_list);
+      return res.data.recipes;
+    },
+  });
 
   const createMutation = useMutation({
     mutationFn: async (data: any) => {
@@ -157,12 +164,18 @@ export default function CreateMealPlanPage() {
                         }}
                         className="border px-2 py-1 rounded w-1/3"
                       />
-                      <input
-                        placeholder="Recipe ID"
+                      <select
                         value={id}
                         onChange={(e) => handleRecipeChange(i, time, e.target.value)}
                         className="border px-2 py-1 rounded w-2/3"
-                      />
+                      >
+                        <option value="">Select Recipe</option>
+                        {recipeOptions?.map((recipe: { _id: string; title: string }) => (
+                          <option key={recipe._id} value={recipe._id}>
+                            {recipe.title}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   ))}
                   <button

@@ -5,6 +5,7 @@ export const routes = {
     login_url: `auth/login`,
     meal_plans: `api/v1/meal_plan/get/meal_plans/`,
     recipes: `api/v1/recipe/get/recipes`,
+    recipes_list: `api/v1/recipe/list/recipes`,
     recipe: (id:string) => `api/v1/recipe/get/recipe/${id}`,
 
     stats_url: `stats/models`,
@@ -16,6 +17,12 @@ export const routes = {
         recipe_create: `/api/v1/admin/create/recipe/`,
         recipe_update: (id:string) => `/api/v1/admin/update/recipe/${id}`,
         recipe_delete: (id:string) => `/api/v1/admin/delete/recipe/${id}`,
+
+        users: `/auth/admin/get/users/`,
+        user_detail: (id:string) => `/auth/admin/get/user/${id}`,
+        user_create: `/auth/admin/create/user/`,
+        user_update: (id:string) => `/auth/admin/update/user/${id}`,
+        user_delete: (id:string) => `/auth/admin/delete/user/${id}`,
 
         mealPlans: `/api/v1/admin/get/meal_plans/`,
         mealPlan: (id:string) => `/api/v1/admin/get/meal_plan/${id}`,

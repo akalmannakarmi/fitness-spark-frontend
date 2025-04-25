@@ -7,20 +7,14 @@ import { useRouter } from "next/router";
 import { toast } from "sonner";
 import { useState } from "react";
 
-type Recipe = {
+type User = {
   _id: string;
-  image: string;
-  title: string;
-  readyInMinutes: number;
-  servings: number;
-  vegetarian: boolean;
-  vegan: boolean;
-  glutenFree: boolean;
-  dairyFree: boolean;
-  cheep: boolean;
+  username: string;
+  email: string;
+  groups: string[];
 };
 
-export default function AdminRecipes() {
+export default function AdminUsers() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
@@ -29,37 +23,37 @@ export default function AdminRecipes() {
   const [limit, setLimit] = useState(10);
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-recipes", search, page, limit],
+    queryKey: ["admin-users", search, page, limit],
     queryFn: async () => {
       const res = await axiosInstance.get(
-        `${routes.admin.recipes}?search=${search}&page=${page}&limit=${limit}`
+        `${routes.admin.users}?search=${search}&page=${page}&limit=${limit}`
       );
       return res.data;
     },
   });
 
-  const useDeleteRecipe = () =>
+  const useDeleteUser = () =>
     useMutation({
       mutationFn: async (id: string) => {
-        await axiosInstance.delete(routes.admin.recipe_delete(id));
+        await axiosInstance.delete(routes.admin.user_delete(id));
       },
       onSuccess: () => {
-        toast.success("Recipe deleted successfully!");
-        queryClient.invalidateQueries({ queryKey: ["admin-recipes"] });
+        toast.success("User deleted successfully!");
+        queryClient.invalidateQueries({ queryKey: ["admin-users"] });
       },
       onError: () => {
-        toast.error("Failed to delete recipe.");
+        toast.error("Failed to delete user.");
       },
     });
 
-  const deleteMutation = useDeleteRecipe();
+  const deleteMutation = useDeleteUser();
 
   const handleEdit = (id: string) => {
-    router.replace(`/admin/recipes/edit/${id}`);
+    router.replace(`/admin/users/edit/${id}`);
   };
 
   const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this recipe?")) {
+    if (confirm("Are you sure you want to delete this user?")) {
       deleteMutation.mutate(id);
     }
   };
@@ -73,31 +67,30 @@ export default function AdminRecipes() {
     <AdminLayout>
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h1 className="text-3xl font-bold">Manage Recipes</h1>
-          <p className="text-gray-600">Add, update, or remove recipes from the app.</p>
+          <h1 className="text-3xl font-bold">Manage Users</h1>
+          <p className="text-gray-600">Search, update, or remove users.</p>
         </div>
         <button
-          onClick={() => router.push("/admin/recipes/create")}
+          onClick={() => router.push("/admin/users/create")}
           className="flex items-center px-4 py-2 bg-blue-600 text-white text-sm font-medium rounded hover:bg-blue-700"
         >
           <Plus className="w-4 h-4 mr-2" />
-          Create Recipe
+          Create User
         </button>
       </div>
 
-      {/* Search Input */}
       <div className="mb-4">
         <input
           type="text"
           value={search}
           onChange={handleSearchChange}
-          placeholder="Search recipes..."
+          placeholder="Search by username..."
           className="px-4 py-2 border rounded w-full md:w-1/3"
         />
       </div>
 
-      {isLoading && <p>Loading recipes...</p>}
-      {error && <p className="text-red-500">Error loading recipes.</p>}
+      {isLoading && <p>Loading users...</p>}
+      {error && <p className="text-red-500">Error loading users.</p>}
 
       {!isLoading && !error && (
         <>
@@ -105,29 +98,29 @@ export default function AdminRecipes() {
             <table className="min-w-full bg-white border border-gray-200 rounded shadow-sm">
               <thead>
                 <tr className="bg-gray-100 text-left text-sm text-gray-600">
-                  <th className="p-3 border-b">Name</th>
-                  <th className="p-3 border-b">Ready in (min)</th>
-                  <th className="p-3 border-b">Servings</th>
+                  <th className="p-3 border-b">Username</th>
+                  <th className="p-3 border-b">Email</th>
+                  <th className="p-3 border-b">Groups</th>
                   <th className="p-3 border-b">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {data.recipes.map((recipe: Recipe) => (
-                  <tr key={recipe._id} className="border-t hover:bg-gray-50 text-sm">
-                    <td className="p-3">{recipe.title}</td>
-                    <td className="p-3">{recipe.readyInMinutes}</td>
-                    <td className="p-3">{recipe.servings}</td>
+                {data.users.map((user: User) => (
+                  <tr key={user._id} className="border-t hover:bg-gray-50 text-sm">
+                    <td className="p-3">{user.username}</td>
+                    <td className="p-3">{user.email}</td>
+                    <td className="p-3">{user.groups.join(", ")}</td>
                     <td className="p-3">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => handleEdit(recipe._id)}
+                          onClick={() => handleEdit(user._id)}
                           className="flex items-center px-2 py-1 text-sm border border-gray-300 rounded hover:bg-gray-100"
                         >
                           <Pencil className="w-4 h-4 mr-1" />
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(recipe._id)}
+                          onClick={() => handleDelete(user._id)}
                           className="flex items-center px-2 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
                         >
                           <Trash2 className="w-4 h-4 mr-1" />

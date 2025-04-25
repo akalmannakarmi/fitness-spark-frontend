@@ -40,6 +40,14 @@ export default function EditMealPlanPage() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [dailyPlans, setDailyPlans] = useState<DayPlan[]>([]);
 
+  const { data: recipeOptions, isLoading: isRecipesLoading } = useQuery({
+    queryKey: ["all-recipes"],
+    queryFn: async () => {
+      const res = await axiosInstance.get(routes.recipes_list);
+      return res.data.recipes;
+    },
+  });
+  
   useEffect(() => {
     if (data) {
       setTitle(data.title);
@@ -164,12 +172,18 @@ export default function EditMealPlanPage() {
                         }}
                         className="border px-2 py-1"
                       />
-                      <input
-                        placeholder="Recipe ID"
+                      <select
                         value={recipeId}
                         onChange={(e) => handleRecipeChange(i, time, e.target.value)}
-                        className="flex-1 border px-2 py-1 rounded"
-                      />
+                        className="border px-2 py-1 rounded w-2/3"
+                      >
+                        <option value="">Select Recipe</option>
+                        {recipeOptions?.map((recipe: { _id: string; title: string }) => (
+                          <option key={recipe._id} value={recipe._id}>
+                            {recipe.title}
+                          </option>
+                        ))}
+                      </select>
                     </div>
                   ))}
                   <button

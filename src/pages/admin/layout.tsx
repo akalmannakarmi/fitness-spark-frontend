@@ -10,6 +10,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const links = [
     { href: "/", label: "Home" },
     { href: "/admin", label: "Dashboard" },
+    { href: "/admin/users", label: "Users" },
     { href: "/admin/meal-plans", label: "Meal Plans" },
     { href: "/admin/recipes", label: "Recipes" },
     { href: "/admin/site-content", label: "Site Content" },
@@ -19,7 +20,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     <div className="min-h-screen flex">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-0 z-50 bg-gray-800 bg-opacity-50 md:bg-opacity-0 md:static md:w-64 p-6 border-r transition-all ease-in-out duration-300 transform ${
+        className={`fixed inset-0 z-50 bg-gray-600 bg-opacity-50 md:bg-opacity-0 md:static md:w-64 p-6 border-r transition-all ease-in-out duration-300 transform ${
           isSidebarOpen ? "translate-x-0" : "-translate-x-full"
         } md:translate-x-0`}
       >
