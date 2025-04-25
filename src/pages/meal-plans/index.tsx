@@ -1,5 +1,6 @@
 'use client'
 
+import Link from 'next/link'
 import { useQuery } from '@tanstack/react-query'
 import axiosInstance from '@/lib/axios'
 import routes from '@/lib/routes'
@@ -44,12 +45,15 @@ export default function MealPlans() {
         {data && (
           <div className="grid gap-6 sm:grid-cols-2">
             {data.meal_plans.map((plan) => (
-              <div key={plan._id} className="p-6 border rounded-lg shadow-sm">
+              <Link
+                key={plan._id}
+                href={`/meal-plans/${plan._id}`}
+                className="p-6 border rounded-lg shadow-sm hover:bg-gray-50 transition"
+              >
                 <h2 className="text-xl font-semibold mb-2">{plan.title}</h2>
                 <p className="text-gray-600 mb-4">{plan.description}</p>
-                <p className="text-gray-600 mb-4">{plan.summary}</p>
-                <p className="text-gray-600 mb-4">{plan.private}</p>
-              </div>
+                <p className="text-gray-500 text-sm italic">{plan.summary}</p>
+              </Link>
             ))}
           </div>
         )}
