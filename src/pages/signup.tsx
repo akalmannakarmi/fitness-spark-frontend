@@ -25,7 +25,7 @@ export default function Signup() {
     formState: { errors },
   } = useForm<SignupInput>();
 
-  const signupMutation = useMutation<AxiosResponse<any>, Error, SignupInput>({
+  const signupMutation = useMutation<AxiosResponse<object>, Error, SignupInput>({
     mutationFn: (data) =>
       axiosInstance.post(routes.signup_url, {
         username: data.username,

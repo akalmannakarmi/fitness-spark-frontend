@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { AxiosResponse } from 'axios'
 import axiosInstance from '@/lib/axios'
 import { useRouter } from 'next/navigation'
@@ -8,7 +8,6 @@ import { useAuth } from '@/lib/auth'
 import Link from 'next/link'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
-import { log } from 'console'
 
 type LoginInput = {
   username: string
@@ -21,12 +20,13 @@ export default function Login() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
-  const loginMutation = useMutation<AxiosResponse<any>, Error, LoginInput>({
+  const loginMutation = useMutation<AxiosResponse<object>, Error, LoginInput>({
     mutationFn: (data: LoginInput) =>
       axiosInstance.post(routes.login_url, data),
     onSuccess: (res) => {
-      const token = res.data.access_token;
-      const admin = res.data.admin;
+      const data = res.data as {access_token:string,admin:boolean}
+      const token = data.access_token;
+      const admin = data.admin;
       login(token,admin);
 
       router.push('/')

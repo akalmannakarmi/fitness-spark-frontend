@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar"
 import axiosInstance from "@/lib/axios"
 import routes from "@/lib/routes"
 import { useQuery } from "@tanstack/react-query"
+import Image from "next/image"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
@@ -254,7 +255,7 @@ export default function Recipes() {
                       key={recipe._id}
                       className="p-6 border rounded-xl shadow hover:shadow-lg transition-shadow duration-200 block bg-white"
                     >
-                      <img
+                      <Image
                         src={recipe.image}
                         alt={recipe.title}
                         className="w-full h-40 object-cover rounded-md mb-3"

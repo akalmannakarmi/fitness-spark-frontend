@@ -2,7 +2,6 @@ import { useQuery } from "@tanstack/react-query";
 import AdminLayout from "./layout";
 import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
-import { AxiosError } from "axios";
 import { useState } from "react";
 import StatChart from "@/components/StatChart";
 

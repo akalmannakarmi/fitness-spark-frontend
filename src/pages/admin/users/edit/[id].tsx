@@ -28,7 +28,7 @@ export default function EditUserPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: object) => {
       return axiosInstance.put(routes.admin.user_update(id as string), data);
     },
     onSuccess: () => {

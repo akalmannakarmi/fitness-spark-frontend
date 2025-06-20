@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
@@ -20,12 +20,14 @@ export default function CreateRecipePage() {
   const [dairyFree, setDairyFree] = useState(false);
   const [cheep, setCheep] = useState(false);
 
+  const filters: [string, boolean, Dispatch<SetStateAction<boolean>>][] = [["Vegetarian", vegetarian, setVegetarian], ["Vegan", vegan, setVegan], ["Gluten Free", glutenFree, setGlutenFree], ["Dairy Free", dairyFree, setDairyFree], ["Cheap", cheep, setCheep]]
+
   const [ingredients, setIngredients] = useState([{ name: "", amount: 0, unit: "" }]);
   const [steps, setSteps] = useState([""]);
   const [nutrients, setNutrients] = useState([{ name: "", amount: 0, unit: "" }]);
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: object) => {
       return axiosInstance.post(routes.admin.recipe_create, data);
     },
     onSuccess: () => {
@@ -100,13 +102,13 @@ export default function CreateRecipePage() {
         />
 
         <div className="grid grid-cols-2 gap-4">
-            {[["Vegetarian", vegetarian, setVegetarian], ["Vegan", vegan, setVegan], ["Gluten Free", glutenFree, setGlutenFree], ["Dairy Free", dairyFree, setDairyFree], ["Cheap", cheep, setCheep]].map(
+            {filters.map(
                 ([label, value, setter]) => (
                 <label key={label as string} className="flex items-center gap-2">
                     <input
                     type="checkbox"
                     checked={value as boolean}
-                    onChange={(e) => (setter as Function)(e.target.checked)}
+                    onChange={(e) => setter(e.target.checked)}
                     />
                     {label as string}
                 </label>

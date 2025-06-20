@@ -26,7 +26,7 @@ export default function AdminRecipes() {
 
   const [search, setSearch] = useState("");
   const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [limit] = useState(10);
 
   const { data, isLoading, error } = useQuery({
     queryKey: ["admin-recipes", search, page, limit],

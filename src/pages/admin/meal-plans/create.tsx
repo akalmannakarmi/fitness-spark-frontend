@@ -24,7 +24,7 @@ export default function CreateMealPlanPage() {
   const [summary, setSummary] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
   const [dailyPlans, setDailyPlans] = useState<DayPlan[]>([]);
-  const { data: recipeOptions, isLoading: isRecipesLoading } = useQuery({
+  const { data: recipeOptions } = useQuery({
     queryKey: ["all-recipes"],
     queryFn: async () => {
       const res = await axiosInstance.get(routes.recipes_list);
@@ -33,7 +33,7 @@ export default function CreateMealPlanPage() {
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: object) => {
       return axiosInstance.post(routes.admin.mealPlan_create, data);
     },
     onSuccess: () => {

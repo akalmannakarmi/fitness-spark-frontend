@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Dispatch, SetStateAction } from "react";
 import AdminLayout from "@/pages/admin/layout";
 import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
@@ -65,6 +65,15 @@ export default function EditRecipePage() {
       setNutrients(data.nutrients || []); // Make sure nutrients is set correctly
     }
   }, [data]);
+
+  const filters: [string, boolean, Dispatch<SetStateAction<boolean>>][] = [
+    ["Vegetarian", vegetarian, setVegetarian],
+    ["Vegan", vegan, setVegan],
+    ["Gluten Free", glutenFree, setGlutenFree],
+    ["Dairy Free", dairyFree, setDairyFree],
+    ["Cheap", cheep, setCheep],
+  ];
+
 
   const updateMutation = useMutation({
     mutationFn: async (formData: RecipeUpdatePayload) => {
@@ -155,13 +164,13 @@ export default function EditRecipePage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {[["Vegetarian", vegetarian, setVegetarian], ["Vegan", vegan, setVegan], ["Gluten Free", glutenFree, setGlutenFree], ["Dairy Free", dairyFree, setDairyFree], ["Cheap", cheep, setCheep]].map(
+            {filters.map(
               ([label, value, setter]) => (
                 <label key={label as string} className="flex items-center gap-2">
                   <input
                     type="checkbox"
                     checked={value as boolean}
-                    onChange={(e) => (setter as Function)(e.target.checked)}
+                    onChange={(e) => setter(e.target.checked)}
                   />
                   {label as string}
                 </label>

@@ -40,7 +40,7 @@ export default function EditMealPlanPage() {
   const [isPrivate, setIsPrivate] = useState(false);
   const [dailyPlans, setDailyPlans] = useState<DayPlan[]>([]);
 
-  const { data: recipeOptions, isLoading: isRecipesLoading } = useQuery({
+  const { data: recipeOptions } = useQuery({
     queryKey: ["all-recipes"],
     queryFn: async () => {
       const res = await axiosInstance.get(routes.recipes_list);

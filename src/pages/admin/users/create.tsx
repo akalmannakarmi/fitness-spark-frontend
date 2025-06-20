@@ -15,7 +15,7 @@ export default function CreateUserPage() {
   const [groups, setGroups] = useState<string[]>([]); // multiple groups
 
   const createMutation = useMutation({
-    mutationFn: async (data: any) => {
+    mutationFn: async (data: object) => {
       return axiosInstance.post(routes.admin.user_create, data);
     },
     onSuccess: () => {
