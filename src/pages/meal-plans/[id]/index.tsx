@@ -6,6 +6,7 @@ import axiosInstance from '@/lib/axios'
 import routes from '@/lib/routes'
 import Navbar from '@/components/Navbar'
 import Footer from '@/components/Footer'
+import Link from 'next/link'
 
 type MealPlanDetail = {
   _id: string
@@ -85,10 +86,12 @@ export default function MealPlanDetailPage() {
                       .sort(([timeA], [timeB]) => timeA.localeCompare(timeB))
                       .map(([time, recipeId]) => (
                         <li key={time} className="flex justify-between">
-                          <span className="text-gray-600">{time}</span>
-                          <span className="text-gray-800 font-medium">
-                            {getRecipeName(recipeId)}
-                          </span>
+                          <Link href={`/recipes/${recipeId}`}>
+                            <span className="text-gray-600">{time}</span>
+                            <span className="text-gray-800 font-medium">
+                              {getRecipeName(recipeId)}
+                            </span>
+                          </Link>
                         </li>
                       ))}
                   </ul>
