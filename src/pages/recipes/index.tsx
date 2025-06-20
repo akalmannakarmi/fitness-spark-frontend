@@ -258,6 +258,8 @@ export default function Recipes() {
                       <Image
                         src={recipe.image}
                         alt={recipe.title}
+                        width={100}
+                        height={100}
                         className="w-full h-40 object-cover rounded-md mb-3"
                       />
                       <h2 className="text-lg font-semibold mb-1">{recipe.title}</h2>

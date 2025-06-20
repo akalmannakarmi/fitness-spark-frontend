@@ -61,7 +61,7 @@ export default function RecipeDetailPage() {
       <Navbar />
       <main className="max-w-4xl mx-auto px-6 py-12">
         <h1 className="text-4xl font-bold mb-2">{title}</h1>
-        <Image src={image} alt={title} className="rounded-lg my-6" />
+        <Image width={500} height={500} src={image} alt={title} className="rounded-lg my-6" />
 
         <div className="mb-6 text-gray-700">
           <p><strong>Ready In:</strong> {readyInMinutes} min</p>
