@@ -50,7 +50,6 @@ export default function EditRecipePage() {
 
   useEffect(() => {
     if (data) {
-      console.log(data); // Log to inspect the structure of the data
       setTitle(data.title || "");
       setReadyInMinutes(data.readyInMinutes || 0);
       setServings(data.servings || 0);

@@ -1,9 +1,8 @@
-- [x] Paginate
-- [ ] User Profile
-- [ ] User list
-- [ ] Integrate Site Content
-- [ ] Meal Plan view
-- [x] Admin panel sidebar
-- [ ] Make project build properly
-- [ ] Oauth Integration
-- [ ] AI chat
+# Fitness Spark Frontend TODO
+
+Tracked as GitHub Issues:
+- Integrate Site Content
+- Meal Plan view
+- Make project build properly
+- Oauth Integration
+- AI chat
