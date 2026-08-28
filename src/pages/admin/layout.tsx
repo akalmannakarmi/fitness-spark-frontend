@@ -3,7 +3,11 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import { Menu, X } from "lucide-react"; // Optional icons for hamburger
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const { pathname } = useRouter();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 

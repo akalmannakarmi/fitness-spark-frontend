@@ -1,4 +1,4 @@
-export const BASE_URL = process.env.NEXT_PUBLIC_API_URL
+export const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export const routes = {
   signup_url: `auth/signup`,
@@ -31,7 +31,7 @@ export const routes = {
     mealPlan_create: `/api/v1/admin/create/meal_plan`,
     mealPlan_update: (id: string) => `/api/v1/admin/update/meal_plan/${id}`,
     mealPlan_delete: (id: string) => `/api/v1/admin/delete/meal_plan/${id}`,
-  }
-}
+  },
+};
 
 export default routes;

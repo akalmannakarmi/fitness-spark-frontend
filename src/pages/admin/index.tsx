@@ -6,37 +6,37 @@ import { useState } from "react";
 import StatChart from "@/components/StatChart";
 
 type Stat = {
-  _id:string,
-  model:string,
-  count:number,
-}
+  _id: string;
+  model: string;
+  count: number;
+};
 
 export default function AdminDashboard() {
-  const [users,setUsers] = useState(0)
-  const [plans,setPlans] = useState(0)
-  const [recipes,setRecipes] = useState(0)
-  const [stats,setStats] = useState(0)
-  const [statIds, setStatIds] = useState<{ [model: string]: string }>({})
+  const [users, setUsers] = useState(0);
+  const [plans, setPlans] = useState(0);
+  const [recipes, setRecipes] = useState(0);
+  const [stats, setStats] = useState(0);
+  const [statIds, setStatIds] = useState<{ [model: string]: string }>({});
 
   useQuery({
     queryKey: ["campaign-detail"],
     queryFn: async () => {
-      const res = await axiosInstance.get(routes.stats_url)
+      const res = await axiosInstance.get(routes.stats_url);
       if (res.data?.models) {
-        const ids: { [model: string]: string } = {}
+        const ids: { [model: string]: string } = {};
         res.data.models.forEach((stat: Stat) => {
-          ids[stat.model] = stat._id
-          if (stat.model === "users") setUsers(stat.count)
-          else if (stat.model === "meal_plans") setPlans(stat.count)
-          else if (stat.model === "recipes") setRecipes(stat.count)
-          else if (stat.model === "statistics") setStats(stat.count)
-        })
-        setStatIds(ids)
+          ids[stat.model] = stat._id;
+          if (stat.model === "users") setUsers(stat.count);
+          else if (stat.model === "meal_plans") setPlans(stat.count);
+          else if (stat.model === "recipes") setRecipes(stat.count);
+          else if (stat.model === "statistics") setStats(stat.count);
+        });
+        setStatIds(ids);
       }
-      return res.data
+      return res.data;
     },
-  })
-  
+  });
+
   return (
     <AdminLayout>
       <h1 className="text-3xl font-bold mb-4">Admin Dashboard</h1>
@@ -61,12 +61,19 @@ export default function AdminDashboard() {
         </div>
       </div>
       <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-        {statIds["users"] && <StatChart statId={statIds["users"]} label="Users" />}
-        {statIds["meal_plans"] && <StatChart statId={statIds["meal_plans"]} label="Meal Plans" />}
-        {statIds["recipes"] && <StatChart statId={statIds["recipes"]} label="Recipes" />}
-        {statIds["statistics"] && <StatChart statId={statIds["statistics"]} label="Statistics" />}
+        {statIds["users"] && (
+          <StatChart statId={statIds["users"]} label="Users" />
+        )}
+        {statIds["meal_plans"] && (
+          <StatChart statId={statIds["meal_plans"]} label="Meal Plans" />
+        )}
+        {statIds["recipes"] && (
+          <StatChart statId={statIds["recipes"]} label="Recipes" />
+        )}
+        {statIds["statistics"] && (
+          <StatChart statId={statIds["statistics"]} label="Statistics" />
+        )}
       </div>
-
     </AdminLayout>
   );
 }

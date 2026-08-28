@@ -74,7 +74,9 @@ export default function AdminRecipes() {
       <div className="flex items-center justify-between mb-4">
         <div>
           <h1 className="text-3xl font-bold">Manage Recipes</h1>
-          <p className="text-gray-600">Add, update, or remove recipes from the app.</p>
+          <p className="text-gray-600">
+            Add, update, or remove recipes from the app.
+          </p>
         </div>
         <button
           onClick={() => router.push("/admin/recipes/create")}
@@ -113,7 +115,10 @@ export default function AdminRecipes() {
               </thead>
               <tbody>
                 {data.recipes.map((recipe: Recipe) => (
-                  <tr key={recipe._id} className="border-t hover:bg-gray-50 text-sm">
+                  <tr
+                    key={recipe._id}
+                    className="border-t hover:bg-gray-50 text-sm"
+                  >
                     <td className="p-3">{recipe.title}</td>
                     <td className="p-3">{recipe.readyInMinutes}</td>
                     <td className="p-3">{recipe.servings}</td>

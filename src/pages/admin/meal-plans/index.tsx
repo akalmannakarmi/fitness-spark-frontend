@@ -117,7 +117,10 @@ export default function AdminMealPlans() {
               </thead>
               <tbody>
                 {data.meal_plans.map((plan) => (
-                  <tr key={plan._id} className="border-t hover:bg-gray-50 text-sm">
+                  <tr
+                    key={plan._id}
+                    className="border-t hover:bg-gray-50 text-sm"
+                  >
                     <td className="p-3">{plan.title}</td>
                     <td className="p-3">{plan.user}</td>
                     <td className="p-3">

@@ -18,7 +18,9 @@ export default function EditUserPage() {
     queryKey: ["edit-user", id],
     enabled: !!id,
     queryFn: async () => {
-      const res = await axiosInstance.get(routes.admin.user_detail(id as string));
+      const res = await axiosInstance.get(
+        routes.admin.user_detail(id as string)
+      );
       const userData = res.data;
       setUsername(userData.username);
       setEmail(userData.email);
@@ -41,7 +43,10 @@ export default function EditUserPage() {
   });
 
   const handleGroupChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+    const selected = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setGroups(selected);
   };
 

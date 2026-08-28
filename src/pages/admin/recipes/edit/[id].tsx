@@ -39,14 +39,18 @@ export default function EditRecipePage() {
   const [readyInMinutes, setReadyInMinutes] = useState(0);
   const [servings, setServings] = useState(0);
   const [steps, setSteps] = useState<string[]>([]);
-  const [ingredients, setIngredients] = useState<{ name: string; amount: number; unit: string }[]>([]);
+  const [ingredients, setIngredients] = useState<
+    { name: string; amount: number; unit: string }[]
+  >([]);
   const [image, setImage] = useState("");
   const [vegetarian, setVegetarian] = useState(false);
   const [vegan, setVegan] = useState(false);
   const [glutenFree, setGlutenFree] = useState(false);
   const [dairyFree, setDairyFree] = useState(false);
   const [cheep, setCheep] = useState(false);
-  const [nutrients, setNutrients] = useState<{ name: string; amount: number; unit: string }[]>([]);
+  const [nutrients, setNutrients] = useState<
+    { name: string; amount: number; unit: string }[]
+  >([]);
 
   useEffect(() => {
     if (data) {
@@ -73,10 +77,12 @@ export default function EditRecipePage() {
     ["Cheap", cheep, setCheep],
   ];
 
-
   const updateMutation = useMutation({
     mutationFn: async (formData: RecipeUpdatePayload) => {
-      return axiosInstance.patch(routes.admin.recipe_update(String(id)), formData);
+      return axiosInstance.patch(
+        routes.admin.recipe_update(String(id)),
+        formData
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["recipe", String(id)] });
@@ -102,7 +108,11 @@ export default function EditRecipePage() {
     });
   };
 
-  const handleIngredientChange = (index: number, field: string, value: string | number) => {
+  const handleIngredientChange = (
+    index: number,
+    field: string,
+    value: string | number
+  ) => {
     const updated = [...ingredients];
     updated[index] = { ...updated[index], [field]: value };
     setIngredients(updated);
@@ -163,18 +173,16 @@ export default function EditRecipePage() {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
-            {filters.map(
-              ([label, value, setter]) => (
-                <label key={label as string} className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={value as boolean}
-                    onChange={(e) => setter(e.target.checked)}
-                  />
-                  {label as string}
-                </label>
-              )
-            )}
+            {filters.map(([label, value, setter]) => (
+              <label key={label as string} className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={value as boolean}
+                  onChange={(e) => setter(e.target.checked)}
+                />
+                {label as string}
+              </label>
+            ))}
           </div>
 
           {/* Ingredients */}
@@ -185,28 +193,52 @@ export default function EditRecipePage() {
                 <input
                   placeholder="Name"
                   value={ingredient.name}
-                  onChange={(e) => handleIngredientChange(idx, "name", e.target.value)}
+                  onChange={(e) =>
+                    handleIngredientChange(idx, "name", e.target.value)
+                  }
                   className="border px-2 py-1 w-1/3"
                 />
                 <input
                   type="number"
                   placeholder="Amount"
                   value={ingredient.amount}
-                  onChange={(e) => handleIngredientChange(idx, "amount", parseFloat(e.target.value))}
+                  onChange={(e) =>
+                    handleIngredientChange(
+                      idx,
+                      "amount",
+                      parseFloat(e.target.value)
+                    )
+                  }
                   className="border px-2 py-1 w-1/3"
                 />
                 <input
                   placeholder="Unit"
                   value={ingredient.unit}
-                  onChange={(e) => handleIngredientChange(idx, "unit", e.target.value)}
+                  onChange={(e) =>
+                    handleIngredientChange(idx, "unit", e.target.value)
+                  }
                   className="border px-2 py-1 w-1/3"
                 />
-                <button type="button" onClick={() => setIngredients((prev) => prev.filter((_, i) => i !== idx))}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setIngredients((prev) => prev.filter((_, i) => i !== idx))
+                  }
+                >
                   ❌
                 </button>
               </div>
             ))}
-            <button type="button" className="text-blue-500 mt-1" onClick={() => setIngredients([...ingredients, { name: "", amount: 0, unit: "" }])}>
+            <button
+              type="button"
+              className="text-blue-500 mt-1"
+              onClick={() =>
+                setIngredients([
+                  ...ingredients,
+                  { name: "", amount: 0, unit: "" },
+                ])
+              }
+            >
               + Add Ingredient
             </button>
           </div>
@@ -249,7 +281,11 @@ export default function EditRecipePage() {
                 />
               </div>
             ))}
-            <button type="button" onClick={handleAddNutrient} className="text-blue-600 hover:underline">
+            <button
+              type="button"
+              onClick={handleAddNutrient}
+              className="text-blue-600 hover:underline"
+            >
               + Add Nutrient
             </button>
           </div>
@@ -264,12 +300,21 @@ export default function EditRecipePage() {
                   onChange={(e) => handleStepChange(idx, e.target.value)}
                   className="w-full border px-2 py-1 rounded"
                 />
-                <button type="button" onClick={() => setSteps((prev) => prev.filter((_, i) => i !== idx))}>
+                <button
+                  type="button"
+                  onClick={() =>
+                    setSteps((prev) => prev.filter((_, i) => i !== idx))
+                  }
+                >
                   ❌
                 </button>
               </div>
             ))}
-            <button type="button" className="text-blue-500 mt-1" onClick={() => setSteps([...steps, ""])}>
+            <button
+              type="button"
+              className="text-blue-500 mt-1"
+              onClick={() => setSteps([...steps, ""])}
+            >
               + Add Step
             </button>
           </div>

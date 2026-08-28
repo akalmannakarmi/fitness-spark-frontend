@@ -1,32 +1,32 @@
-import Footer from "@/components/Footer"
-import Navbar from "@/components/Navbar"
-import axiosInstance from "@/lib/axios"
-import routes from "@/lib/routes"
-import { useQuery } from "@tanstack/react-query"
-import Image from "next/image"
-import Link from "next/link"
-import { useEffect, useState } from "react"
+import Footer from "@/components/Footer";
+import Navbar from "@/components/Navbar";
+import axiosInstance from "@/lib/axios";
+import routes from "@/lib/routes";
+import { useQuery } from "@tanstack/react-query";
+import Image from "next/image";
+import Link from "next/link";
+import { useEffect, useState } from "react";
 
 type Recipe = {
-  _id: string,
-  image: string,
-  title: string,
-  readyInMinutes: number,
-  servings: number,
-  vegetarian: boolean,
-  vegan: boolean,
-  glutenFree: boolean,
-  dairyFree: boolean,
-  cheep: boolean
-}
+  _id: string;
+  image: string;
+  title: string;
+  readyInMinutes: number;
+  servings: number;
+  vegetarian: boolean;
+  vegan: boolean;
+  glutenFree: boolean;
+  dairyFree: boolean;
+  cheep: boolean;
+};
 
 type Response = {
-  recipes: Recipe[],
-  page: number,
-  limit: number,
-  total: number,
-  pages: number
-}
+  recipes: Recipe[];
+  page: number;
+  limit: number;
+  total: number;
+  pages: number;
+};
 
 type Filters = {
   vegetarian?: boolean;
@@ -47,18 +47,18 @@ type Filters = {
 };
 
 const booleanFilterKeys: (keyof Filters)[] = [
-  'vegetarian',
-  'vegan',
-  'glutenFree',
-  'dairyFree',
-  'cheep',
+  "vegetarian",
+  "vegan",
+  "glutenFree",
+  "dairyFree",
+  "cheep",
 ];
 
 const getLimitByWidth = (width: number) => {
   if (width >= 1280) return 12; // xl
-  if (width >= 1024) return 9;  // lg
-  if (width >= 768) return 6;   // md
-  return 4;                     // sm
+  if (width >= 1024) return 9; // lg
+  if (width >= 768) return 6; // md
+  return 4; // sm
 };
 
 const useResponsiveLimit = () => {
@@ -90,7 +90,7 @@ const fetchRecipes = async (
     params: {
       page,
       limit,
-      ...filters
+      ...filters,
     },
   });
   return res.data;
@@ -102,8 +102,8 @@ export default function Recipes() {
   const limit = useResponsiveLimit();
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['recipes', page, filters, limit],
-    queryFn: () => fetchRecipes(page, filters, limit)
+    queryKey: ["recipes", page, filters, limit],
+    queryFn: () => fetchRecipes(page, filters, limit),
   });
 
   const handleFilterChange = (name: keyof Filters) => {
@@ -125,7 +125,9 @@ export default function Recipes() {
             <h2 className="text-xl font-semibold mb-4">Filters</h2>
             <div className="flex flex-col gap-3">
               {booleanFilterKeys.map((key) => {
-                const label = key.replace(/([A-Z])/g, ' $1').replace(/^./, str => str.toUpperCase());
+                const label = key
+                  .replace(/([A-Z])/g, " $1")
+                  .replace(/^./, (str) => str.toUpperCase());
                 return (
                   <label key={key} className="flex items-center gap-2">
                     <input
@@ -148,7 +150,12 @@ export default function Recipes() {
                   className="w-1/2 border px-2 py-1 rounded"
                   value={filters.min_readyInMinutes || ""}
                   onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, min_readyInMinutes: e.target.value ? +e.target.value : undefined }))
+                    setFilters((prev) => ({
+                      ...prev,
+                      min_readyInMinutes: e.target.value
+                        ? +e.target.value
+                        : undefined,
+                    }))
                   }
                 />
                 <input
@@ -157,13 +164,20 @@ export default function Recipes() {
                   className="w-1/2 border px-2 py-1 rounded"
                   value={filters.max_readyInMinutes || ""}
                   onChange={(e) =>
-                    setFilters((prev) => ({ ...prev, max_readyInMinutes: e.target.value ? +e.target.value : undefined }))
+                    setFilters((prev) => ({
+                      ...prev,
+                      max_readyInMinutes: e.target.value
+                        ? +e.target.value
+                        : undefined,
+                    }))
                   }
                 />
               </div>
             </div>
             <div className="mt-4">
-              <label className="block mb-1 font-medium">Include Ingredients</label>
+              <label className="block mb-1 font-medium">
+                Include Ingredients
+              </label>
               <input
                 type="text"
                 placeholder="e.g. garlic, egg"
@@ -171,14 +185,19 @@ export default function Recipes() {
                 onBlur={(e) =>
                   setFilters((prev) => ({
                     ...prev,
-                    include_ingredients: e.target.value.split(",").map(i => i.trim()).filter(Boolean)
+                    include_ingredients: e.target.value
+                      .split(",")
+                      .map((i) => i.trim())
+                      .filter(Boolean),
                   }))
                 }
               />
             </div>
 
             <div className="mt-4">
-              <label className="block mb-1 font-medium">Exclude Ingredients</label>
+              <label className="block mb-1 font-medium">
+                Exclude Ingredients
+              </label>
               <input
                 type="text"
                 placeholder="e.g. flour, cheese"
@@ -186,7 +205,10 @@ export default function Recipes() {
                 onBlur={(e) =>
                   setFilters((prev) => ({
                     ...prev,
-                    exclude_ingredients: e.target.value.split(",").map(i => i.trim()).filter(Boolean)
+                    exclude_ingredients: e.target.value
+                      .split(",")
+                      .map((i) => i.trim())
+                      .filter(Boolean),
                   }))
                 }
               />
@@ -262,8 +284,13 @@ export default function Recipes() {
                         height={100}
                         className="w-full h-40 object-cover rounded-md mb-3"
                       />
-                      <h2 className="text-lg font-semibold mb-1">{recipe.title}</h2>
-                      <p className="text-sm text-gray-600">⏱ {recipe.readyInMinutes} mins · 🍽 {recipe.servings} servings</p>
+                      <h2 className="text-lg font-semibold mb-1">
+                        {recipe.title}
+                      </h2>
+                      <p className="text-sm text-gray-600">
+                        ⏱ {recipe.readyInMinutes} mins · 🍽 {recipe.servings}{" "}
+                        servings
+                      </p>
                       <div className="mt-2 text-xs text-gray-500 space-y-1">
                         {recipe.vegetarian && <p>🥦 Vegetarian</p>}
                         {recipe.vegan && <p>🌱 Vegan</p>}
@@ -284,7 +311,9 @@ export default function Recipes() {
                   >
                     Previous
                   </button>
-                  <span className="text-sm">Page {data.page} of {data.pages}</span>
+                  <span className="text-sm">
+                    Page {data.page} of {data.pages}
+                  </span>
                   <button
                     onClick={() => setPage((p) => Math.min(p + 1, data.pages))}
                     disabled={page === data.pages}

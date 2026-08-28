@@ -47,7 +47,7 @@ export default function EditMealPlanPage() {
       return res.data.recipes;
     },
   });
-  
+
   useEffect(() => {
     if (data) {
       setTitle(data.title);
@@ -60,7 +60,10 @@ export default function EditMealPlanPage() {
 
   const mutation = useMutation({
     mutationFn: async (payload: MealPlan) => {
-      return axiosInstance.patch(routes.admin.mealPlan_update(String(id)), payload);
+      return axiosInstance.patch(
+        routes.admin.mealPlan_update(String(id)),
+        payload
+      );
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["meal-plan", id] });
@@ -69,13 +72,21 @@ export default function EditMealPlanPage() {
     },
   });
 
-  const handleDayChange = (index: number, field: "day" | "summary", value: string) => {
+  const handleDayChange = (
+    index: number,
+    field: "day" | "summary",
+    value: string
+  ) => {
     const updated = [...dailyPlans];
     updated[index] = { ...updated[index], [field]: value };
     setDailyPlans(updated);
   };
 
-  const handleRecipeChange = (index: number, time: string, recipeId: string) => {
+  const handleRecipeChange = (
+    index: number,
+    time: string,
+    recipeId: string
+  ) => {
     const updated = [...dailyPlans];
     updated[index].recipes[time] = recipeId;
     setDailyPlans(updated);
@@ -152,7 +163,9 @@ export default function EditMealPlanPage() {
                 <input
                   placeholder="Day Summary"
                   value={day.summary}
-                  onChange={(e) => handleDayChange(i, "summary", e.target.value)}
+                  onChange={(e) =>
+                    handleDayChange(i, "summary", e.target.value)
+                  }
                   className="w-full border px-2 py-1 rounded"
                 />
                 <div className="space-y-2">
@@ -174,23 +187,25 @@ export default function EditMealPlanPage() {
                       />
                       <select
                         value={recipeId}
-                        onChange={(e) => handleRecipeChange(i, time, e.target.value)}
+                        onChange={(e) =>
+                          handleRecipeChange(i, time, e.target.value)
+                        }
                         className="border px-2 py-1 rounded w-2/3"
                       >
                         <option value="">Select Recipe</option>
-                        {recipeOptions?.map((recipe: { _id: string; title: string }) => (
-                          <option key={recipe._id} value={recipe._id}>
-                            {recipe.title}
-                          </option>
-                        ))}
+                        {recipeOptions?.map(
+                          (recipe: { _id: string; title: string }) => (
+                            <option key={recipe._id} value={recipe._id}>
+                              {recipe.title}
+                            </option>
+                          )
+                        )}
                       </select>
                     </div>
                   ))}
                   <button
                     type="button"
-                    onClick={() =>
-                      handleRecipeChange(i, "06:00:00", "")
-                    }
+                    onClick={() => handleRecipeChange(i, "06:00:00", "")}
                     className="text-blue-500 text-sm"
                   >
                     + Add Recipe Time

@@ -28,7 +28,10 @@ export default function CreateUserPage() {
   });
 
   const handleGroupChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+    const selected = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setGroups(selected);
   };
 

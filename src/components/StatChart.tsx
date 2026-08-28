@@ -1,20 +1,26 @@
-'use client'
+"use client";
 
-import { useStatDetail } from "@/hooks/stat-details"
+import { useStatDetail } from "@/hooks/stat-details";
 import {
-  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
-} from 'recharts'
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 type Props = {
-  statId: string
-  label: string
-}
+  statId: string;
+  label: string;
+};
 
 export default function StatChart({ statId, label }: Props) {
-  const { data, isLoading } = useStatDetail(statId)
+  const { data, isLoading } = useStatDetail(statId);
 
-  if (isLoading) return <div>Loading {label} chart...</div>
-  if (!data) return <div>No data for {label}</div>
+  if (isLoading) return <div>Loading {label} chart...</div>;
+  if (!data) return <div>No data for {label}</div>;
 
   // Convert logs to array
   const chartData = Object.entries(data.logs).map(([timestamp, log]) => ({
@@ -23,7 +29,7 @@ export default function StatChart({ statId, label }: Props) {
     Create: log.Actions?.Create || 0,
     Update: log.Actions?.Update || 0,
     Delete: log.Actions?.Delete || 0,
-  }))
+  }));
 
   return (
     <div className="bg-white p-4 rounded shadow">
@@ -41,5 +47,5 @@ export default function StatChart({ statId, label }: Props) {
         </LineChart>
       </ResponsiveContainer>
     </div>
-  )
+  );
 }

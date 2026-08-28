@@ -106,7 +106,10 @@ export default function AdminUsers() {
               </thead>
               <tbody>
                 {data.users.map((user: User) => (
-                  <tr key={user._id} className="border-t hover:bg-gray-50 text-sm">
+                  <tr
+                    key={user._id}
+                    className="border-t hover:bg-gray-50 text-sm"
+                  >
                     <td className="p-3">{user.username}</td>
                     <td className="p-3">{user.email}</td>
                     <td className="p-3">{user.groups.join(", ")}</td>

@@ -1,39 +1,37 @@
-'use client';
+"use client";
 
-import { useRouter } from 'next/navigation';
-import Navbar from '@/components/Navbar';
-import Footer from '@/components/Footer';
-import { useQuery } from '@tanstack/react-query';
-import axiosInstance from '@/lib/axios';
-import routes from '@/lib/routes';
-import { useAuth } from '@/lib/auth';
+import { useRouter } from "next/navigation";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "@/lib/axios";
+import routes from "@/lib/routes";
+import { useAuth } from "@/lib/auth";
 
 type UserData = {
-  _id:string;
-  username:string;
-  email:string;
-  groups:string[];
-}
-
+  _id: string;
+  username: string;
+  email: string;
+  groups: string[];
+};
 
 const fetchUserData = async (): Promise<UserData> => {
-  const res = await axiosInstance.get(routes.user_info)
-  return res.data
-}
-
+  const res = await axiosInstance.get(routes.user_info);
+  return res.data;
+};
 
 export default function Profile() {
   const router = useRouter();
-  const {logout} = useAuth()
+  const { logout } = useAuth();
 
   const { data: user } = useQuery({
-    queryKey: ['user'],
+    queryKey: ["user"],
     queryFn: fetchUserData,
-  })
+  });
 
   const handleLogout = () => {
     logout();
-    router.push('/login');
+    router.push("/login");
   };
 
   return (
@@ -42,7 +40,8 @@ export default function Profile() {
       <main className="max-w-4xl mx-auto px-6 py-12 min-h-dvh">
         <h1 className="text-4xl font-bold mb-4">My Profile</h1>
         <p className="text-gray-700 mb-8">
-          Welcome back! Manage your meal plans, saved recipes, and account settings here.
+          Welcome back! Manage your meal plans, saved recipes, and account
+          settings here.
         </p>
 
         {user ? (
@@ -57,7 +56,7 @@ export default function Profile() {
             </div>
             <div>
               <p className="text-sm text-gray-500">Groups</p>
-              <p className="text-lg font-medium">{user.groups.join(', ')}</p>
+              <p className="text-lg font-medium">{user.groups.join(", ")}</p>
             </div>
             <button
               onClick={handleLogout}

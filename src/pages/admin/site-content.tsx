@@ -4,7 +4,9 @@ export default function SiteContentEditor() {
   return (
     <AdminLayout>
       <h1 className="text-3xl font-bold mb-4">Edit Site Content</h1>
-      <p className="mb-4 text-gray-600">Update text shown on the home page and other public pages.</p>
+      <p className="mb-4 text-gray-600">
+        Update text shown on the home page and other public pages.
+      </p>
 
       <form className="space-y-6 max-w-2xl">
         <div>
