@@ -12,6 +12,14 @@ const fetchRecipe = async (id: string): Promise<RecipeDetail> => {
   return res.data;
 };
 
+export async function getStaticPaths() {
+  return { paths: [], fallback: false };
+}
+
+export async function getStaticProps() {
+  return { props: {} };
+}
+
 export default function RecipeDetailPage() {
   const { query } = useRouter();
   const id = query.id as string;

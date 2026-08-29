@@ -17,6 +17,14 @@ const fetchRecipes = async (): Promise<RecipeShortList> => {
   return res.data;
 };
 
+export async function getStaticPaths() {
+  return { paths: [], fallback: false };
+}
+
+export async function getStaticProps() {
+  return { props: {} };
+}
+
 export default function MealPlanDetailPage() {
   const router = useRouter();
   const { isReady, query } = router;
