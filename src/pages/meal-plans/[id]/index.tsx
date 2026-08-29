@@ -1,7 +1,7 @@
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
-import { useParams } from "next/navigation";
+import { useRouter } from "next/router";
 import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import Navbar from "@/components/Navbar";
@@ -39,8 +39,9 @@ const fetchRecipes = async (): Promise<RecipesResponse> => {
 };
 
 export default function MealPlanDetailPage() {
-  const params = useParams();
-  const id = params?.id as string;
+  const router = useRouter();
+  const { isReady, query } = router;
+  const id = Array.isArray(query.id) ? query.id[0] : (query.id as string);
 
   const {
     data: plan,
@@ -49,7 +50,7 @@ export default function MealPlanDetailPage() {
   } = useQuery({
     queryKey: ["mealPlanDetail", id],
     queryFn: () => fetchMealPlan(id),
-    enabled: !!id,
+    enabled: isReady && !!id,
   });
 
   const { data: recipeData } = useQuery({

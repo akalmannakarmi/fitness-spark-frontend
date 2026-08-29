@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { AxiosResponse } from "axios";
-import axiosInstance from "@/lib/axios";
-import { useRouter } from "next/navigation";
+import axiosInstance, { getApiError } from "@/lib/axios";
+import { useRouter } from "next/router";
 import { useMutation } from "@tanstack/react-query";
 import { routes } from "@/lib/routes";
 import { useAuth } from "@/lib/auth";
@@ -16,23 +16,28 @@ type LoginInput = {
 
 export default function Login() {
   const router = useRouter();
-  const { login, logout } = useAuth();
+  const { login } = useAuth();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const loginMutation = useMutation<AxiosResponse<object>, Error, LoginInput>({
     mutationFn: (data: LoginInput) =>
       axiosInstance.post(routes.login_url, data),
     onSuccess: (res) => {
-      const data = res.data as { access_token: string; admin: boolean };
+      const data = res.data as {
+        access_token: string;
+        admin: boolean;
+        expires_at?: number | string;
+      };
       const token = data.access_token;
       const admin = data.admin;
-      login(token, admin);
+      login(token, admin, data.expires_at);
 
       router.push("/");
     },
     onError: (error) => {
-      console.error("Login failed:", error);
+      setErrorMessage(getApiError(error, "Login failed. Please try again."));
     },
   });
 
@@ -44,10 +49,7 @@ export default function Login() {
   return (
     <>
       <Navbar />
-      <main
-        onLoad={logout}
-        className="flex flex-col justify-center items-center min-h-dvh px-6 py-12"
-      >
+      <main className="flex flex-col justify-center items-center min-h-dvh px-6 py-12">
         <div className="w-full max-w-md">
           <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -80,7 +82,7 @@ export default function Login() {
 
           {loginMutation.isError && (
             <p className="mt-2 text-center text-sm text-red-500">
-              Login failed. Please check your credentials.
+              {errorMessage}
             </p>
           )}
 
