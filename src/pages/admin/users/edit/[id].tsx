@@ -5,6 +5,7 @@ import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import { toast } from "sonner";
 import AdminLayout from "../../layout";
+import type { UserUpdate } from "@/types/api";
 
 export default function EditUserPage() {
   const router = useRouter();
@@ -18,7 +19,9 @@ export default function EditUserPage() {
     queryKey: ["edit-user", id],
     enabled: !!id,
     queryFn: async () => {
-      const res = await axiosInstance.get(routes.admin.user_detail(id as string));
+      const res = await axiosInstance.get(
+        routes.admin.userDetail(id as string)
+      );
       const userData = res.data;
       setUsername(userData.username);
       setEmail(userData.email);
@@ -28,8 +31,8 @@ export default function EditUserPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (data: object) => {
-      return axiosInstance.put(routes.admin.user_update(id as string), data);
+    mutationFn: async (data: UserUpdate) => {
+      return axiosInstance.put(routes.admin.userUpdate(id as string), data);
     },
     onSuccess: () => {
       toast.success("User updated successfully!");
@@ -41,7 +44,10 @@ export default function EditUserPage() {
   });
 
   const handleGroupChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+    const selected = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setGroups(selected);
   };
 

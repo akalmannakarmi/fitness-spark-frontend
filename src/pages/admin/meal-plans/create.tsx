@@ -6,14 +6,7 @@ import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
-
-type RecipeTimeMap = { [time: string]: string };
-
-type DayPlan = {
-  day: string;
-  summary: string;
-  recipes: RecipeTimeMap;
-};
+import type { DailyPlan, MealPlanCreate } from "@/types/api";
 
 export default function CreateMealPlanPage() {
   const router = useRouter();
@@ -23,18 +16,18 @@ export default function CreateMealPlanPage() {
   const [description, setDescription] = useState("");
   const [summary, setSummary] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [dailyPlans, setDailyPlans] = useState<DayPlan[]>([]);
+  const [dailyPlans, setDailyPlans] = useState<DailyPlan[]>([]);
   const { data: recipeOptions } = useQuery({
     queryKey: ["all-recipes"],
     queryFn: async () => {
-      const res = await axiosInstance.get(routes.recipes_list);
+      const res = await axiosInstance.get(routes.recipesList);
       return res.data.recipes;
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: object) => {
-      return axiosInstance.post(routes.admin.mealPlan_create, data);
+    mutationFn: async (data: MealPlanCreate) => {
+      return axiosInstance.post(routes.admin.mealPlanCreate, data);
     },
     onSuccess: () => {
       toast.success("Meal plan created!");
@@ -63,7 +56,11 @@ export default function CreateMealPlanPage() {
     setDailyPlans(updated);
   };
 
-  const handleRecipeChange = (dayIndex: number, time: string, recipeId: string) => {
+  const handleRecipeChange = (
+    dayIndex: number,
+    time: string,
+    recipeId: string
+  ) => {
     const updated = [...dailyPlans];
     updated[dayIndex].recipes[time] = recipeId;
     setDailyPlans(updated);
@@ -91,7 +88,6 @@ export default function CreateMealPlanPage() {
       <div className="max-w-4xl mx-auto py-8 px-4">
         <h1 className="text-2xl font-bold mb-6">Create Meal Plan</h1>
         <form onSubmit={handleSubmit} className="space-y-6">
-
           <div>
             <label className="block font-medium">Title</label>
             <input
@@ -131,7 +127,10 @@ export default function CreateMealPlanPage() {
           <div>
             <h2 className="font-semibold mb-2">Daily Plans</h2>
             {dailyPlans.map((day, i) => (
-              <div key={i} className="p-4 mb-4 border rounded bg-gray-50 space-y-3">
+              <div
+                key={i}
+                className="p-4 mb-4 border rounded bg-gray-50 space-y-3"
+              >
                 <div className="flex gap-4">
                   <input
                     type="date"
@@ -142,7 +141,9 @@ export default function CreateMealPlanPage() {
                   <input
                     placeholder="Day Summary"
                     value={day.summary}
-                    onChange={(e) => handleDayChange(i, "summary", e.target.value)}
+                    onChange={(e) =>
+                      handleDayChange(i, "summary", e.target.value)
+                    }
                     className="border px-2 py-1 rounded w-1/2"
                   />
                 </div>
@@ -166,15 +167,19 @@ export default function CreateMealPlanPage() {
                       />
                       <select
                         value={id}
-                        onChange={(e) => handleRecipeChange(i, time, e.target.value)}
+                        onChange={(e) =>
+                          handleRecipeChange(i, time, e.target.value)
+                        }
                         className="border px-2 py-1 rounded w-2/3"
                       >
                         <option value="">Select Recipe</option>
-                        {recipeOptions?.map((recipe: { _id: string; title: string }) => (
-                          <option key={recipe._id} value={recipe._id}>
-                            {recipe.title}
-                          </option>
-                        ))}
+                        {recipeOptions?.map(
+                          (recipe: { _id: string; title: string }) => (
+                            <option key={recipe._id} value={recipe._id}>
+                              {recipe.title}
+                            </option>
+                          )
+                        )}
                       </select>
                     </div>
                   ))}
@@ -189,7 +194,9 @@ export default function CreateMealPlanPage() {
 
                 <button
                   type="button"
-                  onClick={() => setDailyPlans((prev) => prev.filter((_, d) => d !== i))}
+                  onClick={() =>
+                    setDailyPlans((prev) => prev.filter((_, d) => d !== i))
+                  }
                   className="text-red-500 text-sm flex items-center gap-1"
                 >
                   <Trash2 className="w-4 h-4" />

@@ -5,18 +5,21 @@ import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import { toast } from "sonner";
 import AdminLayout from "../layout";
+import type { UserCreate } from "@/types/api";
+
+const GROUP_OPTIONS = ["user", "admin"];
 
 export default function CreateUserPage() {
   const router = useRouter();
 
-  const [name, setName] = useState("");
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [groups, setGroups] = useState<string[]>([]); // multiple groups
+  const [groups, setGroups] = useState<string[]>([]);
 
   const createMutation = useMutation({
-    mutationFn: async (data: object) => {
-      return axiosInstance.post(routes.admin.user_create, data);
+    mutationFn: async (data: UserCreate) => {
+      return axiosInstance.post(routes.admin.userCreate, data);
     },
     onSuccess: () => {
       toast.success("User created successfully!");
@@ -28,18 +31,16 @@ export default function CreateUserPage() {
   });
 
   const handleGroupChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const selected = Array.from(e.target.selectedOptions, (option) => option.value);
+    const selected = Array.from(
+      e.target.selectedOptions,
+      (option) => option.value
+    );
     setGroups(selected);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    createMutation.mutate({
-      username: name,
-      email,
-      password,
-      groups,
-    });
+    createMutation.mutate({ username, email, password, groups });
   };
 
   return (
@@ -50,8 +51,8 @@ export default function CreateUserPage() {
           <input
             className="w-full border p-2 rounded"
             placeholder="Username"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
           />
           <input
             type="email"
@@ -73,9 +74,11 @@ export default function CreateUserPage() {
             value={groups}
             onChange={handleGroupChange}
           >
-            <option value="user">User</option>
-            <option value="admin">Admin</option>
-            {/* Add more groups here if needed */}
+            {GROUP_OPTIONS.map((group) => (
+              <option key={group} value={group}>
+                {group}
+              </option>
+            ))}
           </select>
           <button
             type="submit"

@@ -1,34 +1,21 @@
-'use client'
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import axiosInstance from "@/lib/axios";
+import routes from "@/lib/routes";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import type { MealPlanList } from "@/types/api";
 
-import Link from 'next/link'
-import { useQuery } from '@tanstack/react-query'
-import axiosInstance from '@/lib/axios'
-import routes from '@/lib/routes'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-
-type MealPlan = {
-  _id: string
-  title: string
-  description: string
-  summary: string
-  private: boolean
-}
-
-type Response = {
-  meal_plans: MealPlan[]
-}
-
-const fetchMealPlans = async (): Promise<Response> => {
-  const res = await axiosInstance.get(routes.meal_plans)
-  return res.data
-}
+const fetchMealPlans = async (): Promise<MealPlanList> => {
+  const res = await axiosInstance.get(routes.mealPlans);
+  return res.data;
+};
 
 export default function MealPlans() {
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['mealPlans'],
+    queryKey: ["mealPlans"],
     queryFn: fetchMealPlans,
-  })
+  });
 
   return (
     <>
@@ -60,5 +47,5 @@ export default function MealPlans() {
       </main>
       <Footer />
     </>
-  )
+  );
 }

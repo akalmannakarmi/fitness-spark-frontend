@@ -1,50 +1,54 @@
-import { useState } from 'react'
-import { AxiosResponse } from 'axios'
-import axiosInstance from '@/lib/axios'
-import { useRouter } from 'next/navigation'
-import { useMutation } from '@tanstack/react-query'
-import { routes } from '@/lib/routes'
-import { useAuth } from '@/lib/auth'
-import Link from 'next/link'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
+import { useState } from "react";
+import { AxiosResponse } from "axios";
+import axiosInstance, { getApiError } from "@/lib/axios";
+import { useRouter } from "next/router";
+import { useMutation } from "@tanstack/react-query";
+import { routes } from "@/lib/routes";
+import { useAuth } from "@/lib/auth";
+import Link from "next/link";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 type LoginInput = {
-  username: string
-  password: string
-}
+  username: string;
+  password: string;
+};
 
 export default function Login() {
-  const router = useRouter()
-  const {login,logout} = useAuth()
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  const router = useRouter();
+  const { login } = useAuth();
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const loginMutation = useMutation<AxiosResponse<object>, Error, LoginInput>({
-    mutationFn: (data: LoginInput) =>
-      axiosInstance.post(routes.login_url, data),
+    mutationFn: (data: LoginInput) => axiosInstance.post(routes.loginUrl, data),
     onSuccess: (res) => {
-      const data = res.data as {access_token:string,admin:boolean}
+      const data = res.data as {
+        access_token: string;
+        admin: boolean;
+        expires_at?: number | string;
+      };
       const token = data.access_token;
       const admin = data.admin;
-      login(token,admin);
+      login(token, admin, data.expires_at);
 
-      router.push('/')
+      router.push("/");
     },
     onError: (error) => {
-      console.error('Login failed:', error)
+      setErrorMessage(getApiError(error, "Login failed. Please try again."));
     },
-  })
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    loginMutation.mutate({ username, password })
-  }
+    e.preventDefault();
+    loginMutation.mutate({ username, password });
+  };
 
   return (
     <>
       <Navbar />
-      <main onLoad={logout} className="flex flex-col justify-center items-center min-h-dvh px-6 py-12">
+      <main className="flex flex-col justify-center items-center min-h-dvh px-6 py-12">
         <div className="w-full max-w-md">
           <h1 className="text-3xl font-bold mb-6 text-center">Login</h1>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -71,18 +75,18 @@ export default function Login() {
               className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
               disabled={loginMutation.isPending}
             >
-              {loginMutation.isPending ? 'Logging in...' : 'Login'}
+              {loginMutation.isPending ? "Logging in..." : "Login"}
             </button>
           </form>
 
           {loginMutation.isError && (
             <p className="mt-2 text-center text-sm text-red-500">
-              Login failed. Please check your credentials.
+              {errorMessage}
             </p>
           )}
 
           <p className="mt-4 text-center text-sm text-gray-600">
-            Don’t have an account?{' '}
+            Don’t have an account?{" "}
             <Link href="/signup" className="text-blue-600 hover:underline">
               Sign up instead
             </Link>
@@ -91,5 +95,5 @@ export default function Login() {
       </main>
       <Footer />
     </>
-  )
+  );
 }

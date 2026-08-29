@@ -1,11 +1,29 @@
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Menu, X } from "lucide-react"; // Optional icons for hamburger
+import { useAuth } from "@/lib/auth";
 
-export default function AdminLayout({ children }: { children: React.ReactNode }) {
-  const { pathname } = useRouter();
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const router = useRouter();
+  const { isAdmin } = useAuth();
+  const { pathname } = router;
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [isAuthorized, setIsAuthorized] = useState(false);
+
+  useEffect(() => {
+    if (!isAdmin) {
+      router.replace("/");
+    } else {
+      setIsAuthorized(true);
+    }
+  }, [isAdmin, router]);
+
+  if (!isAuthorized) return null;
 
   const links = [
     { href: "/", label: "Home" },
@@ -13,7 +31,6 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     { href: "/admin/users", label: "Users" },
     { href: "/admin/meal-plans", label: "Meal Plans" },
     { href: "/admin/recipes", label: "Recipes" },
-    { href: "/admin/site-content", label: "Site Content" },
   ];
 
   return (

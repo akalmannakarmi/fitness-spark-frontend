@@ -1,60 +1,52 @@
-'use client'
-
-import { useQuery } from '@tanstack/react-query'
-import { useParams } from 'next/navigation'
-import axiosInstance from '@/lib/axios'
-import routes from '@/lib/routes'
-import Navbar from '@/components/Navbar'
-import Footer from '@/components/Footer'
-import Link from 'next/link'
-
-type MealPlanDetail = {
-  _id: string
-  title: string
-  description: string
-  summary: string
-  private: boolean
-  dailyPlans: {
-    day: string
-    recipes: Record<string, string> // time: recipeId
-    summary: string
-  }[]
-}
-
-type RecipesResponse = {
-  recipes: {
-    _id: string
-    title: string
-  }[]
-}
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/router";
+import axiosInstance from "@/lib/axios";
+import routes from "@/lib/routes";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import Link from "next/link";
+import type { MealPlanDetail, RecipeShortList } from "@/types/api";
 
 const fetchMealPlan = async (id: string): Promise<MealPlanDetail> => {
-  const res = await axiosInstance.get(routes.meal_plan(id))
-  return res.data
+  const res = await axiosInstance.get(routes.mealPlan(id));
+  return res.data;
+};
+
+const fetchRecipes = async (): Promise<RecipeShortList> => {
+  const res = await axiosInstance.get(routes.recipesList);
+  return res.data;
+};
+
+export async function getStaticPaths() {
+  return { paths: [], fallback: false };
 }
 
-const fetchRecipes = async (): Promise<RecipesResponse> => {
-  const res = await axiosInstance.get(routes.recipes_list)
-  return res.data
+export async function getStaticProps() {
+  return { props: {} };
 }
 
 export default function MealPlanDetailPage() {
-  const params = useParams()
-  const id = params?.id as string
+  const router = useRouter();
+  const { isReady, query } = router;
+  const id = Array.isArray(query.id) ? query.id[0] : (query.id as string);
 
-  const { data: plan, isLoading, isError } = useQuery({
-    queryKey: ['mealPlanDetail', id],
+  const {
+    data: plan,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["mealPlanDetail", id],
     queryFn: () => fetchMealPlan(id),
-    enabled: !!id,
-  })
+    enabled: isReady && !!id,
+  });
 
   const { data: recipeData } = useQuery({
-    queryKey: ['recipes'],
+    queryKey: ["recipes"],
     queryFn: fetchRecipes,
-  })
+  });
 
   const getRecipeName = (recipeId: string) =>
-    recipeData?.recipes.find((r) => r._id === recipeId)?.title || 'Loading...'
+    recipeData?.recipes.find((r) => r._id === recipeId)?.title || "Loading...";
 
   return (
     <>
@@ -103,5 +95,5 @@ export default function MealPlanDetailPage() {
       </main>
       <Footer />
     </>
-  )
+  );
 }

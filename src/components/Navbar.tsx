@@ -1,12 +1,11 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Menu, X, User } from "lucide-react";
-import { useAuth } from '@/lib/auth'
+import { useAuth } from "@/lib/auth";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { isLoggedIn, isAdmin } = useAuth()
-
+  const { isLoggedIn, isAdmin } = useAuth();
 
   const navLinks = [
     { href: "/meal-plans", label: "Meal Plans" },
@@ -30,7 +29,10 @@ export default function Navbar() {
           ))}
 
           {isLoggedIn ? (
-            <Link href="/profile" className="flex items-center gap-2 hover:text-blue-600">
+            <Link
+              href="/profile"
+              className="flex items-center gap-2 hover:text-blue-600"
+            >
               <User size={20} />
               Profile
             </Link>

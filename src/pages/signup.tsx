@@ -25,20 +25,22 @@ export default function Signup() {
     formState: { errors },
   } = useForm<SignupInput>();
 
-  const signupMutation = useMutation<AxiosResponse<object>, Error, SignupInput>({
-    mutationFn: (data) =>
-      axiosInstance.post(routes.signup_url, {
-        username: data.username,
-        email: data.email,
-        password: data.password,
-      }),
-    onSuccess: () => {
-      router.push("/login");
-    },
-    onError: () => {
-      // You could show a global error message if needed
-    },
-  });
+  const signupMutation = useMutation<AxiosResponse<object>, Error, SignupInput>(
+    {
+      mutationFn: (data) =>
+        axiosInstance.post(routes.signupUrl, {
+          username: data.username,
+          email: data.email,
+          password: data.password,
+        }),
+      onSuccess: () => {
+        router.push("/login");
+      },
+      onError: () => {
+        // You could show a global error message if needed
+      },
+    }
+  );
 
   const onSubmit = (data: SignupInput) => {
     signupMutation.mutate(data);
@@ -53,7 +55,6 @@ export default function Signup() {
         <div className="w-full max-w-md">
           <h1 className="text-3xl font-bold mb-6 text-center">Sign Up</h1>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-
             {/* Username */}
             <div>
               <input
@@ -63,7 +64,9 @@ export default function Signup() {
                 {...register("username", { required: "Username is required" })}
               />
               {errors.username && (
-                <p className="text-red-500 text-sm mt-1">{errors.username.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.username.message}
+                </p>
               )}
             </div>
 
@@ -82,7 +85,9 @@ export default function Signup() {
                 })}
               />
               {errors.email && (
-                <p className="text-red-500 text-sm mt-1">{errors.email.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -95,14 +100,17 @@ export default function Signup() {
                 {...register("password", {
                   required: "Password is required",
                   pattern: {
-                    value: /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
+                    value:
+                      /^(?=.*[0-9])(?=.*[!@#$%^&*])[A-Za-z\d!@#$%^&*]{8,}$/,
                     message:
                       "Password must be at least 8 characters, include a number and a special character",
                   },
                 })}
               />
               {errors.password && (
-                <p className="text-red-500 text-sm mt-1">{errors.password.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.password.message}
+                </p>
               )}
             </div>
 
@@ -119,7 +127,9 @@ export default function Signup() {
                 })}
               />
               {errors.confirmPassword && (
-                <p className="text-red-500 text-sm mt-1">{errors.confirmPassword.message}</p>
+                <p className="text-red-500 text-sm mt-1">
+                  {errors.confirmPassword.message}
+                </p>
               )}
             </div>
 
