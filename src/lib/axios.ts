@@ -1,8 +1,6 @@
 import axios, { AxiosError } from "axios";
-import { BASE_URL } from "@/lib/routes";
+import { API_BASE_URL } from "@/lib/routes";
 import Router from "next/router";
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || BASE_URL;
 
 const axiosInstance = axios.create({
   baseURL: API_BASE_URL,

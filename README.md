@@ -52,10 +52,9 @@ Open <http://localhost:3000> with your browser. The backend API must be running 
 
 ## Environment Variables
 
-| Variable                   | Description                                                                        |
-| -------------------------- | ---------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_API_URL`      | Base URL of the backend API (default `http://localhost:8000`)                      |
-| `NEXT_PUBLIC_API_BASE_URL` | Optional override used as the Axios base URL (falls back to `NEXT_PUBLIC_API_URL`) |
+| Variable              | Description                                                   |
+| --------------------- | ------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL` | Base URL of the backend API (default `http://localhost:8000`) |
 
 ## Available Scripts
 
@@ -86,4 +85,4 @@ The `Dockerfile` is a multi-stage build (Bun for deps/build, Node base image for
 
 ## Contributing
 
-Development guidelines and standards are shared with the backend and documented in the [`fitness-spark` CONTRIBUTING.md](https://github.com/akalmannakarmi/fitness-spark/blob/main/CONTRIBUTING.md).
+Development guidelines and standards are shared with the backend and documented in the [`fitness-spark` CONTRIBUTING.md](https://github.com/akalmannakarmi/fitness-spark/blob/main/CONTRIBUTING.md). Frontend-specific guides — coding standards, pre-commit hooks, and CI gates — live in the [Frontend (Next.js / TypeScript)](https://github.com/akalmannakarmi/fitness-spark/blob/main/CONTRIBUTING.md#frontend-nextjs--typescript) and [Husky + lint-staged](https://github.com/akalmannakarmi/fitness-spark/blob/main/CONTRIBUTING.md#frontend-husky--lint-staged) sections.

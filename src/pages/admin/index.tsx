@@ -21,7 +21,7 @@ export default function AdminDashboard() {
   useQuery({
     queryKey: ["campaign-detail"],
     queryFn: async () => {
-      const res = await axiosInstance.get(routes.stats_url);
+      const res = await axiosInstance.get(routes.statsUrl);
       if (res.data?.models) {
         const ids: { [model: string]: string } = {};
         res.data.models.forEach((stat: Stat) => {

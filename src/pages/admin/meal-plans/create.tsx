@@ -6,14 +6,7 @@ import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import { toast } from "sonner";
 import { Plus, Trash2 } from "lucide-react";
-
-type RecipeTimeMap = { [time: string]: string };
-
-type DayPlan = {
-  day: string;
-  summary: string;
-  recipes: RecipeTimeMap;
-};
+import type { DailyPlan, MealPlanCreate } from "@/types/api";
 
 export default function CreateMealPlanPage() {
   const router = useRouter();
@@ -23,18 +16,18 @@ export default function CreateMealPlanPage() {
   const [description, setDescription] = useState("");
   const [summary, setSummary] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [dailyPlans, setDailyPlans] = useState<DayPlan[]>([]);
+  const [dailyPlans, setDailyPlans] = useState<DailyPlan[]>([]);
   const { data: recipeOptions } = useQuery({
     queryKey: ["all-recipes"],
     queryFn: async () => {
-      const res = await axiosInstance.get(routes.recipes_list);
+      const res = await axiosInstance.get(routes.recipesList);
       return res.data.recipes;
     },
   });
 
   const createMutation = useMutation({
-    mutationFn: async (data: object) => {
-      return axiosInstance.post(routes.admin.mealPlan_create, data);
+    mutationFn: async (data: MealPlanCreate) => {
+      return axiosInstance.post(routes.admin.mealPlanCreate, data);
     },
     onSuccess: () => {
       toast.success("Meal plan created!");

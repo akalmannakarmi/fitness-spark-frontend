@@ -5,6 +5,7 @@ import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import { toast } from "sonner";
 import AdminLayout from "../layout";
+import type { RecipeCreate } from "@/types/api";
 
 export default function CreateRecipePage() {
   const router = useRouter();
@@ -18,14 +19,14 @@ export default function CreateRecipePage() {
   const [vegan, setVegan] = useState(false);
   const [glutenFree, setGlutenFree] = useState(false);
   const [dairyFree, setDairyFree] = useState(false);
-  const [cheep, setCheep] = useState(false);
+  const [cheap, setCheap] = useState(false);
 
   const filters: [string, boolean, Dispatch<SetStateAction<boolean>>][] = [
     ["Vegetarian", vegetarian, setVegetarian],
     ["Vegan", vegan, setVegan],
     ["Gluten Free", glutenFree, setGlutenFree],
     ["Dairy Free", dairyFree, setDairyFree],
-    ["Cheap", cheep, setCheep],
+    ["Cheap", cheap, setCheap],
   ];
 
   const [ingredients, setIngredients] = useState([
@@ -37,8 +38,8 @@ export default function CreateRecipePage() {
   ]);
 
   const createMutation = useMutation({
-    mutationFn: async (data: object) => {
-      return axiosInstance.post(routes.admin.recipe_create, data);
+    mutationFn: async (data: RecipeCreate) => {
+      return axiosInstance.post(routes.admin.recipeCreate, data);
     },
     onSuccess: () => {
       toast.success("Recipe created!");
@@ -72,7 +73,7 @@ export default function CreateRecipePage() {
       vegan,
       glutenFree,
       dairyFree,
-      cheep,
+      cheap,
       ingredients,
       steps,
       nutrients,

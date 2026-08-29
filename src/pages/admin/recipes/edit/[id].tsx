@@ -5,21 +5,7 @@ import AdminLayout from "@/pages/admin/layout";
 import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import { toast } from "sonner";
-
-type RecipeUpdatePayload = {
-  title: string;
-  image: string;
-  readyInMinutes: number;
-  servings: number;
-  vegetarian: boolean;
-  vegan: boolean;
-  glutenFree: boolean;
-  dairyFree: boolean;
-  cheep: boolean;
-  ingredients: { name: string; amount: number; unit: string }[];
-  nutrients: { name: string; amount: number; unit: string }[];
-  steps: string[];
-};
+import type { RecipeUpdate } from "@/types/api";
 
 export default function EditRecipePage() {
   const router = useRouter();
@@ -47,7 +33,7 @@ export default function EditRecipePage() {
   const [vegan, setVegan] = useState(false);
   const [glutenFree, setGlutenFree] = useState(false);
   const [dairyFree, setDairyFree] = useState(false);
-  const [cheep, setCheep] = useState(false);
+  const [cheap, setCheap] = useState(false);
   const [nutrients, setNutrients] = useState<
     { name: string; amount: number; unit: string }[]
   >([]);
@@ -64,7 +50,7 @@ export default function EditRecipePage() {
       setVegan(data.vegan);
       setGlutenFree(data.glutenFree);
       setDairyFree(data.dairyFree);
-      setCheep(data.cheep);
+      setCheap(data.cheap);
       setNutrients(data.nutrients || []); // Make sure nutrients is set correctly
     }
   }, [data]);
@@ -74,13 +60,13 @@ export default function EditRecipePage() {
     ["Vegan", vegan, setVegan],
     ["Gluten Free", glutenFree, setGlutenFree],
     ["Dairy Free", dairyFree, setDairyFree],
-    ["Cheap", cheep, setCheep],
+    ["Cheap", cheap, setCheap],
   ];
 
   const updateMutation = useMutation({
-    mutationFn: async (formData: RecipeUpdatePayload) => {
+    mutationFn: async (formData: RecipeUpdate) => {
       return axiosInstance.patch(
-        routes.admin.recipe_update(String(id)),
+        routes.admin.recipeUpdate(String(id)),
         formData
       );
     },
@@ -101,7 +87,7 @@ export default function EditRecipePage() {
       vegan,
       glutenFree,
       dairyFree,
-      cheep,
+      cheap,
       ingredients,
       nutrients,
       steps,

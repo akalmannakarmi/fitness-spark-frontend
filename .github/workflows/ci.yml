@@ -25,7 +25,7 @@ jobs:
       - run: bun install --frozen-lockfile
       - run: bun run build
         env:
-          NEXT_PUBLIC_API_BASE_URL: http://localhost:8000
+          NEXT_PUBLIC_API_URL: http://localhost:8000
 
   docker-build:
     needs: [lint, build]

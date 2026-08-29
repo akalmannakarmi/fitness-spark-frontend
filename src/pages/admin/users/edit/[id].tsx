@@ -5,6 +5,7 @@ import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import { toast } from "sonner";
 import AdminLayout from "../../layout";
+import type { UserUpdate } from "@/types/api";
 
 export default function EditUserPage() {
   const router = useRouter();
@@ -19,7 +20,7 @@ export default function EditUserPage() {
     enabled: !!id,
     queryFn: async () => {
       const res = await axiosInstance.get(
-        routes.admin.user_detail(id as string)
+        routes.admin.userDetail(id as string)
       );
       const userData = res.data;
       setUsername(userData.username);
@@ -30,8 +31,8 @@ export default function EditUserPage() {
   });
 
   const updateMutation = useMutation({
-    mutationFn: async (data: object) => {
-      return axiosInstance.put(routes.admin.user_update(id as string), data);
+    mutationFn: async (data: UserUpdate) => {
+      return axiosInstance.put(routes.admin.userUpdate(id as string), data);
     },
     onSuccess: () => {
       toast.success("User updated successfully!");

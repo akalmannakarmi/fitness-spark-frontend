@@ -28,7 +28,7 @@ export default function Signup() {
   const signupMutation = useMutation<AxiosResponse<object>, Error, SignupInput>(
     {
       mutationFn: (data) =>
-        axiosInstance.post(routes.signup_url, {
+        axiosInstance.post(routes.signupUrl, {
           username: data.username,
           email: data.email,
           password: data.password,

@@ -1,5 +1,3 @@
-"use client";
-
 import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/router";
 import axiosInstance from "@/lib/axios";
@@ -7,34 +5,15 @@ import routes from "@/lib/routes";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
-
-type MealPlanDetail = {
-  _id: string;
-  title: string;
-  description: string;
-  summary: string;
-  private: boolean;
-  dailyPlans: {
-    day: string;
-    recipes: Record<string, string>; // time: recipeId
-    summary: string;
-  }[];
-};
-
-type RecipesResponse = {
-  recipes: {
-    _id: string;
-    title: string;
-  }[];
-};
+import type { MealPlanDetail, RecipeShortList } from "@/types/api";
 
 const fetchMealPlan = async (id: string): Promise<MealPlanDetail> => {
-  const res = await axiosInstance.get(routes.meal_plan(id));
+  const res = await axiosInstance.get(routes.mealPlan(id));
   return res.data;
 };
 
-const fetchRecipes = async (): Promise<RecipesResponse> => {
-  const res = await axiosInstance.get(routes.recipes_list);
+const fetchRecipes = async (): Promise<RecipeShortList> => {
+  const res = await axiosInstance.get(routes.recipesList);
   return res.data;
 };
 

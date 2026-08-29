@@ -5,36 +5,9 @@ import routes from "@/lib/routes";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Image from "next/image";
+import type { RecipeDetail } from "@/types/api";
 
-type Nutrient = {
-  name: string;
-  amount: number;
-  unit: string;
-};
-
-type Ingredient = {
-  name: string;
-  amount: number;
-  unit: string;
-};
-
-type Recipe = {
-  _id: string;
-  title: string;
-  image: string;
-  readyInMinutes: number;
-  servings: number;
-  vegetarian: boolean;
-  vegan: boolean;
-  glutenFree: boolean;
-  dairyFree: boolean;
-  cheep: boolean;
-  nutrients: Nutrient[];
-  ingredients: Ingredient[];
-  steps: string[];
-};
-
-const fetchRecipe = async (id: string): Promise<Recipe> => {
+const fetchRecipe = async (id: string): Promise<RecipeDetail> => {
   const res = await axiosInstance.get(routes.recipe(id));
   return res.data;
 };
@@ -101,7 +74,7 @@ export default function RecipeDetailPage() {
             {data.dairyFree && (
               <span className="bg-green-100 px-2 py-1 rounded">Dairy Free</span>
             )}
-            {data.cheep && (
+            {data.cheap && (
               <span className="bg-green-100 px-2 py-1 rounded">Cheap</span>
             )}
           </div>

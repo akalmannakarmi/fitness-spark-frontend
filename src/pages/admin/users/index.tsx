@@ -2,60 +2,54 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AdminLayout from "@/pages/admin/layout";
 import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
 import { useState } from "react";
-
-type User = {
-  _id: string;
-  username: string;
-  email: string;
-  groups: string[];
-};
+import type { User, UserList } from "@/types/api";
 
 export default function AdminUsers() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebouncedValue(search, 300);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
+  const [pendingDelete, setPendingDelete] = useState<User | null>(null);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-users", search, page, limit],
+  const { data, isLoading, error } = useQuery<UserList>({
+    queryKey: ["admin-users", debouncedSearch, page, limit],
     queryFn: async () => {
-      const res = await axiosInstance.get(
-        `${routes.admin.users}?search=${search}&page=${page}&limit=${limit}`
-      );
+      const res = await axiosInstance.get(routes.admin.users, {
+        params: { search: debouncedSearch, page, limit },
+      });
       return res.data;
     },
   });
 
-  const useDeleteUser = () =>
-    useMutation({
-      mutationFn: async (id: string) => {
-        await axiosInstance.delete(routes.admin.user_delete(id));
-      },
-      onSuccess: () => {
-        toast.success("User deleted successfully!");
-        queryClient.invalidateQueries({ queryKey: ["admin-users"] });
-      },
-      onError: () => {
-        toast.error("Failed to delete user.");
-      },
-    });
-
-  const deleteMutation = useDeleteUser();
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await axiosInstance.delete(routes.admin.userDelete(id));
+    },
+    onSuccess: () => {
+      toast.success("User deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["admin-users"] });
+    },
+    onError: () => {
+      toast.error("Failed to delete user.");
+    },
+  });
 
   const handleEdit = (id: string) => {
     router.replace(`/admin/users/edit/${id}`);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this user?")) {
-      deleteMutation.mutate(id);
-    }
+  const handleConfirmDelete = () => {
+    if (pendingDelete) deleteMutation.mutate(pendingDelete._id);
+    setPendingDelete(null);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -92,7 +86,7 @@ export default function AdminUsers() {
       {isLoading && <p>Loading users...</p>}
       {error && <p className="text-red-500">Error loading users.</p>}
 
-      {!isLoading && !error && (
+      {!isLoading && !error && data && (
         <>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-200 rounded shadow-sm">
@@ -105,7 +99,7 @@ export default function AdminUsers() {
                 </tr>
               </thead>
               <tbody>
-                {data.users.map((user: User) => (
+                {data.users.map((user) => (
                   <tr
                     key={user._id}
                     className="border-t hover:bg-gray-50 text-sm"
@@ -123,7 +117,7 @@ export default function AdminUsers() {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(user._id)}
+                          onClick={() => setPendingDelete(user)}
                           className="flex items-center px-2 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
                         >
                           <Trash2 className="w-4 h-4 mr-1" />
@@ -159,6 +153,15 @@ export default function AdminUsers() {
           </div>
         </>
       )}
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete user"
+        message={`Are you sure you want to delete "${pendingDelete?.username}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </AdminLayout>
   );
 }

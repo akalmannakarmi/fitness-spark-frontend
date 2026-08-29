@@ -5,20 +5,7 @@ import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import AdminLayout from "@/pages/admin/layout";
 import { toast } from "sonner";
-
-type DayPlan = {
-  day: string;
-  summary: string;
-  recipes: { [time: string]: string };
-};
-
-type MealPlan = {
-  title: string;
-  description: string;
-  summary: string;
-  private: boolean;
-  dailyPlans: DayPlan[];
-};
+import type { DailyPlan, MealPlanUpdate } from "@/types/api";
 
 export default function EditMealPlanPage() {
   const router = useRouter();
@@ -38,12 +25,12 @@ export default function EditMealPlanPage() {
   const [description, setDescription] = useState("");
   const [summary, setSummary] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [dailyPlans, setDailyPlans] = useState<DayPlan[]>([]);
+  const [dailyPlans, setDailyPlans] = useState<DailyPlan[]>([]);
 
   const { data: recipeOptions } = useQuery({
     queryKey: ["all-recipes"],
     queryFn: async () => {
-      const res = await axiosInstance.get(routes.recipes_list);
+      const res = await axiosInstance.get(routes.recipesList);
       return res.data.recipes;
     },
   });
@@ -59,9 +46,9 @@ export default function EditMealPlanPage() {
   }, [data]);
 
   const mutation = useMutation({
-    mutationFn: async (payload: MealPlan) => {
+    mutationFn: async (payload: MealPlanUpdate) => {
       return axiosInstance.patch(
-        routes.admin.mealPlan_update(String(id)),
+        routes.admin.mealPlanUpdate(String(id)),
         payload
       );
     },

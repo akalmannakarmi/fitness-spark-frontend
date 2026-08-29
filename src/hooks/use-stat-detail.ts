@@ -37,7 +37,7 @@ function toCount(value: unknown): number {
   return 0;
 }
 
-function transformLogs(logs: Record<string, LogEntry>): ChartPoint[] {
+export function transformLogs(logs: Record<string, LogEntry>): ChartPoint[] {
   return Object.entries(logs).map(([key, entry]) => {
     const timestamp = Number(key) * 60 * 1000;
     const dateStr = new Date(timestamp).toLocaleString();
@@ -55,7 +55,7 @@ export function useStatDetail(statId: string) {
   return useQuery<ChartPoint[]>({
     queryKey: ["stat-detail", statId],
     queryFn: async () => {
-      const res = await axiosInstance.get(routes.stat_detail_url(statId));
+      const res = await axiosInstance.get(routes.statDetailUrl(statId));
       const data = res.data as StatDetail;
       return transformLogs(data.logs ?? {});
     },

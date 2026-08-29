@@ -1,48 +1,30 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/router";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AdminLayout from "../layout";
 import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { Pencil, Trash2, Plus } from "lucide-react";
 import { toast } from "sonner";
-
-type MealPlan = {
-  _id: string;
-  user: string;
-  title: string;
-  private: boolean;
-};
-
-type MealPlanResponse = {
-  meal_plans: MealPlan[];
-  total: number;
-  page: number;
-  limit: number;
-  pages: number;
-};
+import type { MealPlan, MealPlanList } from "@/types/api";
 
 export default function AdminMealPlans() {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState(search);
+  const debouncedSearch = useDebouncedValue(search, 300);
   const [page, setPage] = useState(1);
   const limit = 10;
+  const [pendingDelete, setPendingDelete] = useState<MealPlan | null>(null);
 
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      setDebouncedSearch(search);
-      setPage(1);
-    }, 500);
-    return () => clearTimeout(timeout);
-  }, [search]);
-
-  const { data, isLoading, error } = useQuery<MealPlanResponse>({
+  const { data, isLoading, error } = useQuery<MealPlanList>({
     queryKey: ["admin-meal_plans", debouncedSearch, page],
     queryFn: async () => {
-      const res = await axiosInstance.get(
-        `${routes.admin.mealPlans}?search=${debouncedSearch}&page=${page}&limit=${limit}`
-      );
+      const res = await axiosInstance.get(routes.admin.mealPlans, {
+        params: { search: debouncedSearch, page, limit },
+      });
       return res.data;
     },
   });
@@ -51,27 +33,27 @@ export default function AdminMealPlans() {
     router.push(`/admin/meal-plans/edit/${id}`);
   };
 
-  const useDeleteMealPlan = () => {
-    const queryClient = useQueryClient();
-    return useMutation({
-      mutationFn: async (id: string) => {
-        await axiosInstance.delete(routes.admin.mealPlan_delete(id));
-      },
-      onSuccess: () => {
-        toast.success("Meal Plan deleted successfully!");
-        queryClient.invalidateQueries({ queryKey: ["admin-meal_plans"] });
-      },
-      onError: () => {
-        toast.error("Failed to delete meal plan.");
-      },
-    });
-  };
-  const deleteMutation = useDeleteMealPlan();
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await axiosInstance.delete(routes.admin.mealPlanDelete(id));
+    },
+    onSuccess: () => {
+      toast.success("Meal Plan deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["admin-meal_plans"] });
+    },
+    onError: () => {
+      toast.error("Failed to delete meal plan.");
+    },
+  });
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this meal plan?")) {
-      deleteMutation.mutate(id);
-    }
+  const handleConfirmDelete = () => {
+    if (pendingDelete) deleteMutation.mutate(pendingDelete._id);
+    setPendingDelete(null);
+  };
+
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearch(e.target.value);
+    setPage(1);
   };
 
   return (
@@ -94,7 +76,7 @@ export default function AdminMealPlans() {
         <input
           type="text"
           value={search}
-          onChange={(e) => setSearch(e.target.value)}
+          onChange={handleSearchChange}
           placeholder="Search meal plans..."
           className="px-4 py-2 border rounded w-full md:w-1/3"
         />
@@ -136,7 +118,7 @@ export default function AdminMealPlans() {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(plan._id)}
+                          onClick={() => setPendingDelete(plan)}
                           className="flex items-center px-2 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
                         >
                           <Trash2 className="w-4 h-4 mr-1" />
@@ -172,6 +154,15 @@ export default function AdminMealPlans() {
           </div>
         </>
       )}
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete meal plan"
+        message={`Are you sure you want to delete "${pendingDelete?.title}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </AdminLayout>
   );
 }

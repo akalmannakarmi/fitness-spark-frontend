@@ -31,7 +31,6 @@ export default function AdminLayout({
     { href: "/admin/users", label: "Users" },
     { href: "/admin/meal-plans", label: "Meal Plans" },
     { href: "/admin/recipes", label: "Recipes" },
-    { href: "/admin/site-content", label: "Site Content" },
   ];
 
   return (

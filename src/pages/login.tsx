@@ -22,8 +22,7 @@ export default function Login() {
   const [errorMessage, setErrorMessage] = useState("");
 
   const loginMutation = useMutation<AxiosResponse<object>, Error, LoginInput>({
-    mutationFn: (data: LoginInput) =>
-      axiosInstance.post(routes.login_url, data),
+    mutationFn: (data: LoginInput) => axiosInstance.post(routes.loginUrl, data),
     onSuccess: (res) => {
       const data = res.data as {
         access_token: string;

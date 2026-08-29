@@ -2,66 +2,54 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import AdminLayout from "@/pages/admin/layout";
 import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import { useDebouncedValue } from "@/hooks/use-debounced-value";
 import { Pencil, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/router";
 import { toast } from "sonner";
 import { useState } from "react";
-
-type Recipe = {
-  _id: string;
-  image: string;
-  title: string;
-  readyInMinutes: number;
-  servings: number;
-  vegetarian: boolean;
-  vegan: boolean;
-  glutenFree: boolean;
-  dairyFree: boolean;
-  cheep: boolean;
-};
+import type { Recipe, RecipeList } from "@/types/api";
 
 export default function AdminRecipes() {
   const router = useRouter();
   const queryClient = useQueryClient();
 
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebouncedValue(search, 300);
   const [page, setPage] = useState(1);
   const [limit] = useState(10);
+  const [pendingDelete, setPendingDelete] = useState<Recipe | null>(null);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["admin-recipes", search, page, limit],
+  const { data, isLoading, error } = useQuery<RecipeList>({
+    queryKey: ["admin-recipes", debouncedSearch, page, limit],
     queryFn: async () => {
-      const res = await axiosInstance.get(
-        `${routes.admin.recipes}?search=${search}&page=${page}&limit=${limit}`
-      );
+      const res = await axiosInstance.get(routes.admin.recipes, {
+        params: { search: debouncedSearch, page, limit },
+      });
       return res.data;
     },
   });
 
-  const useDeleteRecipe = () =>
-    useMutation({
-      mutationFn: async (id: string) => {
-        await axiosInstance.delete(routes.admin.recipe_delete(id));
-      },
-      onSuccess: () => {
-        toast.success("Recipe deleted successfully!");
-        queryClient.invalidateQueries({ queryKey: ["admin-recipes"] });
-      },
-      onError: () => {
-        toast.error("Failed to delete recipe.");
-      },
-    });
-
-  const deleteMutation = useDeleteRecipe();
+  const deleteMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await axiosInstance.delete(routes.admin.recipeDelete(id));
+    },
+    onSuccess: () => {
+      toast.success("Recipe deleted successfully!");
+      queryClient.invalidateQueries({ queryKey: ["admin-recipes"] });
+    },
+    onError: () => {
+      toast.error("Failed to delete recipe.");
+    },
+  });
 
   const handleEdit = (id: string) => {
     router.replace(`/admin/recipes/edit/${id}`);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this recipe?")) {
-      deleteMutation.mutate(id);
-    }
+  const handleConfirmDelete = () => {
+    if (pendingDelete) deleteMutation.mutate(pendingDelete._id);
+    setPendingDelete(null);
   };
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -101,7 +89,7 @@ export default function AdminRecipes() {
       {isLoading && <p>Loading recipes...</p>}
       {error && <p className="text-red-500">Error loading recipes.</p>}
 
-      {!isLoading && !error && (
+      {!isLoading && !error && data && (
         <>
           <div className="overflow-x-auto">
             <table className="min-w-full bg-white border border-gray-200 rounded shadow-sm">
@@ -114,7 +102,7 @@ export default function AdminRecipes() {
                 </tr>
               </thead>
               <tbody>
-                {data.recipes.map((recipe: Recipe) => (
+                {data.recipes.map((recipe) => (
                   <tr
                     key={recipe._id}
                     className="border-t hover:bg-gray-50 text-sm"
@@ -132,7 +120,7 @@ export default function AdminRecipes() {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(recipe._id)}
+                          onClick={() => setPendingDelete(recipe)}
                           className="flex items-center px-2 py-1 text-sm text-white bg-red-500 rounded hover:bg-red-600"
                         >
                           <Trash2 className="w-4 h-4 mr-1" />
@@ -168,6 +156,15 @@ export default function AdminRecipes() {
           </div>
         </>
       )}
+
+      <ConfirmDialog
+        open={pendingDelete !== null}
+        title="Delete recipe"
+        message={`Are you sure you want to delete "${pendingDelete?.title}"? This action cannot be undone.`}
+        confirmLabel="Delete"
+        onConfirm={handleConfirmDelete}
+        onCancel={() => setPendingDelete(null)}
+      />
     </AdminLayout>
   );
 }

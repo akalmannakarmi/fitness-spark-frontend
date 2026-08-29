@@ -1,5 +1,3 @@
-"use client";
-
 import { useRouter } from "next/router";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,16 +5,10 @@ import { useQuery } from "@tanstack/react-query";
 import axiosInstance from "@/lib/axios";
 import routes from "@/lib/routes";
 import { useAuth } from "@/lib/auth";
+import type { User } from "@/types/api";
 
-type UserData = {
-  _id: string;
-  username: string;
-  email: string;
-  groups: string[];
-};
-
-const fetchUserData = async (): Promise<UserData> => {
-  const res = await axiosInstance.get(routes.user_info);
+const fetchUserData = async (): Promise<User> => {
+  const res = await axiosInstance.get(routes.userInfo);
   return res.data;
 };
 

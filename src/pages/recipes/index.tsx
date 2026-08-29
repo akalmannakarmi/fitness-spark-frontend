@@ -6,52 +6,14 @@ import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import type { RecipeFilters, RecipeList } from "@/types/api";
 
-type Recipe = {
-  _id: string;
-  image: string;
-  title: string;
-  readyInMinutes: number;
-  servings: number;
-  vegetarian: boolean;
-  vegan: boolean;
-  glutenFree: boolean;
-  dairyFree: boolean;
-  cheep: boolean;
-};
-
-type Response = {
-  recipes: Recipe[];
-  page: number;
-  limit: number;
-  total: number;
-  pages: number;
-};
-
-type Filters = {
-  vegetarian?: boolean;
-  vegan?: boolean;
-  glutenFree?: boolean;
-  dairyFree?: boolean;
-  cheep?: boolean;
-  min_readyInMinutes?: number;
-  max_readyInMinutes?: number;
-  include_ingredients?: string[];
-  exclude_ingredients?: string[];
-  nutrients?: {
-    [key: string]: {
-      min?: number;
-      max?: number;
-    };
-  };
-};
-
-const booleanFilterKeys: (keyof Filters)[] = [
+const booleanFilterKeys: (keyof RecipeFilters)[] = [
   "vegetarian",
   "vegan",
   "glutenFree",
   "dairyFree",
-  "cheep",
+  "cheap",
 ];
 
 const getLimitByWidth = (width: number) => {
@@ -83,9 +45,9 @@ const useResponsiveLimit = () => {
 
 const fetchRecipes = async (
   page = 1,
-  filters: Filters = {},
+  filters: RecipeFilters = {},
   limit: number
-): Promise<Response> => {
+): Promise<RecipeList> => {
   const res = await axiosInstance.get(routes.recipes, {
     params: {
       page,
@@ -98,7 +60,7 @@ const fetchRecipes = async (
 
 export default function Recipes() {
   const [page, setPage] = useState(1);
-  const [filters, setFilters] = useState<Filters>({});
+  const [filters, setFilters] = useState<RecipeFilters>({});
   const limit = useResponsiveLimit();
 
   const { data, isLoading, isError } = useQuery({
@@ -106,7 +68,7 @@ export default function Recipes() {
     queryFn: () => fetchRecipes(page, filters, limit),
   });
 
-  const handleFilterChange = (name: keyof Filters) => {
+  const handleFilterChange = (name: keyof RecipeFilters) => {
     setFilters((prev) => ({
       ...prev,
       [name]: !prev[name],
@@ -296,7 +258,7 @@ export default function Recipes() {
                         {recipe.vegan && <p>🌱 Vegan</p>}
                         {recipe.glutenFree && <p>🚫 Gluten</p>}
                         {recipe.dairyFree && <p>🥛 Free</p>}
-                        {recipe.cheep && <p>💰 Budget-friendly</p>}
+                        {recipe.cheap && <p>💰 Budget-friendly</p>}
                       </div>
                     </Link>
                   ))}
