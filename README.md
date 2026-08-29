@@ -1,40 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/pages/api-reference/create-next-app).
+# Fitness Spark — Frontend
+
+Web frontend for **Fitness Spark**, a meal-planning application that helps users create personalized meal plans, discover healthy recipes, and track their nutrition goals. This is a Next.js (Pages Router) application that talks to the [Fitness Spark backend API](https://github.com/akalmannakarmi/fitness-spark) (a separate repository).
+
+## Tech Stack
+
+- **Framework:** Next.js 15 (Pages Router)
+- **UI:** React 19
+- **Styling:** Tailwind CSS v4 (CSS-first configuration)
+- **Data fetching:** TanStack Query + Axios
+- **Forms:** React Hook Form
+- **Charts:** Recharts
+- **Icons:** Lucide
+- **Package manager:** Bun
+- **Quality tools:** ESLint, Prettier, TypeScript (strict), Husky + lint-staged
+- **Testing:** Vitest + Testing Library + jsdom
+
+## Prerequisites
+
+- **[Bun](https://bun.sh)** (package manager and runtime)
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the repository
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/akalmannakarmi/fitness-spark-frontend.git
+cd fitness-spark-frontend
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+```bash
+bun install
+```
 
-[API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+### 3. Configure environment variables
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/pages/building-your-application/routing/api-routes) instead of React pages.
+Copy the example file and adjust the API URL if your backend is not on `localhost:8000`:
 
-This project uses [`next/font`](https://nextjs.org/docs/pages/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+cp .env.example .env.local
+```
 
-## Learn More
+### 4. Run the development server
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+bun run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn-pages-router) - an interactive Next.js tutorial.
+Open <http://localhost:3000> with your browser. The backend API must be running — see its README for setup.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Environment Variables
 
-## Deploy on Vercel
+| Variable                   | Description                                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`      | Base URL of the backend API (default `http://localhost:8000`)                      |
+| `NEXT_PUBLIC_API_BASE_URL` | Optional override used as the Axios base URL (falls back to `NEXT_PUBLIC_API_URL`) |
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Available Scripts
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/pages/building-your-application/deploying) for more details.
+| Script                 | Description                              |
+| ---------------------- | ---------------------------------------- |
+| `bun run dev`          | Start the development server (Turbopack) |
+| `bun run build`        | Create a production build                |
+| `bun run start`        | Start the production server              |
+| `bun run lint`         | Run ESLint                               |
+| `bun run lint:fix`     | Run ESLint and auto-fix issues           |
+| `bun run format`       | Format code with Prettier                |
+| `bun run format:check` | Check formatting with Prettier           |
+| `bun run typecheck`    | Type-check with `tsc --noEmit`           |
+| `bun run test`         | Run tests with Vitest                    |
+| `bun run test:ui`      | Open the Vitest UI                       |
+
+## Docker
+
+Build and run the frontend with Docker:
+
+```bash
+docker compose up --build
+```
+
+The app is served on port `3000`. Compose reads environment variables from `.env`.
+
+The `Dockerfile` is a multi-stage build (Bun for deps/build, Node base image for runtime) that relies on Next.js `output: "standalone"` for a minimal production image.
+
+## Contributing
+
+Development guidelines and standards are shared with the backend and documented in the [`fitness-spark` CONTRIBUTING.md](https://github.com/akalmannakarmi/fitness-spark/blob/main/CONTRIBUTING.md).
